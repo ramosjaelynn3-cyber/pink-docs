@@ -18,8 +18,8 @@ const characters = {
 };
 
 // ---------- POPUP ----------
-function openCard(charId) {
-  const char = characters[charId];
+function openCard(id) {
+  const char = characters[id];
 
   document.getElementById("charName").innerText = char.name;
   document.getElementById("charInfo").innerText = char.info;
@@ -30,16 +30,15 @@ function openCard(charId) {
   char.fanart.forEach(img => {
     const image = document.createElement("img");
     image.src = img;
-    image.style.width = "100px";
-    image.style.margin = "5px";
+    image.style.width = "110px";
+    image.style.borderRadius = "12px";
+    image.style.margin = "6px";
+    image.style.boxShadow = "0 4px 10px rgba(0,0,0,0.15)";
     fanartDiv.appendChild(image);
   });
 
-  document.getElementById("popup").classList.remove("hidden");
-}
-
-function closePopup() {
-  document.getElementById("popup").classList.add("hidden");
+  const popup = document.getElementById("popup");
+  popup.classList.remove("hidden");
 }
 
 // ---------- LOGIN----------
