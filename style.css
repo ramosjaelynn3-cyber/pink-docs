@@ -1,65 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #ffe6f1;
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #ffe4f3, #ffeef9);
+  overflow: hidden;
 }
 
+/* APP LAYOUT */
 .layout {
   display: flex;
   height: 100vh;
 }
 
-/* SIDEBAR */
+/* SIDEBAR (GLASS STYLE) */
 .sidebar {
-  width: 220px;
-  background: #ffb6d9;
-  padding: 15px;
+  width: 240px;
+  padding: 16px;
+  background: rgba(255, 182, 217, 0.35);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255,255,255,0.4);
 }
 
+/* CHARACTER CARDS */
 .card {
-  background: white;
-  padding: 10px;
+  background: rgba(255,255,255,0.7);
+  padding: 12px;
   margin: 10px 0;
-  border-radius: 12px;
+  border-radius: 16px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* MAIN */
+.card:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: white;
+  box-shadow: 0 8px 18px rgba(255, 105, 180, 0.25);
+}
+
+/* MAIN AREA */
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+/* TOP BAR */
 .topbar {
-  background: #ff8fc1;
-  padding: 10px;
+  padding: 12px 16px;
+  background: rgba(255, 143, 193, 0.8);
+  color: white;
   display: flex;
   justify-content: space-between;
-  color: white;
+  align-items: center;
+  font-weight: 600;
 }
 
-#editor {
-  height: 100%;
+/* BUTTONS */
+button {
   background: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+  font-weight: 600;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: #ffe6f1;
+}
+
+/* EDITOR */
+#editor {
+  flex: 1;
+  background: white;
+  margin: 12px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  padding: 10px;
 }
 
 /* POPUP */
 .popup {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .popup-content {
   background: white;
-  width: 400px;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 15px;
+  padding: 18px;
+  border-radius: 18px;
+  width: 360px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: pop 0.2s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .hidden {
@@ -69,4 +116,5 @@ body {
 .close {
   float: right;
   cursor: pointer;
+  font-size: 18px;
 }
