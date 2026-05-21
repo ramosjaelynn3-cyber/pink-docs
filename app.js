@@ -42,7 +42,21 @@ function closePopup() {
   document.getElementById("popup").classList.add("hidden");
 }
 
-// ---------- LOGIN PLACEHOLDER ----------
-function login() {
-  alert("We will connect Supabase login next!");
+// ---------- LOGIN----------
+const supabase = supabase.createClient(
+  "https://hnvaddvdhmoigjosutnq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhudmFkZHZkaG1vaWdqb3N1dG5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTczMTgsImV4cCI6MjA5NDkzMzMxOH0.kUk7dU4aAMXA7Mxizx6ak6IrJ04q4eVsufiBYNjGp6A"
+);
+
+async function login() {
+  const email = prompt("Email:");
+  const password = prompt("Password:");
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) alert(error.message);
+  else alert("Logged in!");
 }
