@@ -10,147 +10,147 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{
-margin:0;
-font-family:Nunito;
-background:linear-gradient(135deg,#ffe6f3,#ffcce6);
-height:100vh;
-overflow-y:auto;
-color:#5b2a45;
+body {
+    margin: 0;
+    font-family: Nunito;
+    background: linear-gradient(135deg,#ffe6f3,#ffcce6);
+    height: 100vh;
+    overflow-y: auto;
+    color: #5b2a45;
 }
 
-.app{
-display:flex;
-height:100vh;
-backdrop-filter:blur(18px);
+.app {
+    display: flex;
+    height: 100vh;
+    backdrop-filter: blur(18px);
 }
 
 /* SIDEBAR */
-.sidebar{
-width:270px;
-background:rgba(255,255,255,0.4);
-padding:20px;
-border-right:2px solid rgba(255,255,255,0.6);
+.sidebar {
+    width: 270px;
+    background: rgba(255,255,255,0.4);
+    padding: 20px;
+    border-right: 2px solid rgba(255,255,255,0.6);
 }
 
-.logo{
-font-size:26px;
-color:#ff4fa0;
-margin-bottom:10px;
+.logo {
+    font-size: 26px;
+    color: #ff4fa0;
+    margin-bottom: 15px;
 }
 
-/* DOCS */
-.doc{
-padding:10px;
-margin-top:10px;
-background:rgba(255,255,255,0.6);
-border-radius:12px;
-cursor:pointer;
+.new-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 14px;
+    background: #ff4fa0;
+    color: white;
+    cursor: pointer;
+}
+
+/* DOC LIST */
+.doc {
+    padding: 10px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    cursor: pointer;
 }
 
 /* MAIN */
-.main{
-flex:1;
-display:flex;
-flex-direction:column;
-padding:20px;
+.main {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* TOPBAR */
-.topbar{
-display:flex;
-gap:10px;
-align-items:center;
-background:rgba(255,255,255,0.45);
-padding:12px;
-border-radius:18px;
-flex-wrap:wrap;
+.topbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(255,255,255,0.45);
+    padding: 12px;
+    border-radius: 18px;
 }
 
-/* FILE */
-.file{
-position:relative;
-}
-.file button{
-border:none;
-padding:10px;
-border-radius:12px;
-background:rgba(255,255,255,0.7);
-cursor:pointer;
+/* FILE MENU */
+.menu {
+    position: relative;
 }
 
-.drop{
-position:absolute;
-top:40px;
-background:white;
-padding:8px;
-border-radius:12px;
-display:none;
+.menu button {
+    border: none;
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.7);
 }
 
-.drop button{
-display:block;
-border:none;
-background:transparent;
-padding:6px;
+.drop {
+    position: absolute;
+    top: 40px;
+    background: white;
+    border-radius: 12px;
+    padding: 8px;
+    display: none;
 }
 
 /* TITLE */
-.title{
-flex:1;
-padding:10px;
-border:none;
-border-radius:12px;
+.title {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
 }
 
-/* TOOLBAR */
-.tools{
-display:flex;
-gap:6px;
-align-items:center;
-flex-wrap:wrap;
+/* TOOLS */
+.tools {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .tools button,
-.tools select{
-border:none;
-padding:8px;
-border-radius:10px;
-background:rgba(255,255,255,0.7);
-cursor:pointer;
+.tools select {
+    border: none;
+    padding: 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
 }
 
 /* EDITOR */
-.editor{
-flex:1;
-margin-top:15px;
-padding:25px;
-background:rgba(255,255,255,0.55);
-border-radius:24px;
-overflow-y:auto;
-outline:none;
-min-height:300px;
+.editor {
+    flex: 1;
+    margin-top: 15px;
+    padding: 25px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 24px;
+    outline: none;
+    overflow-y: auto;
 }
 
-/* 🌸 FLOWER HIGHLIGHT PICKER */
-.palette{
-display:none;
-position:absolute;
-background:white;
-padding:8px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-gap:5px;
-flex-wrap:wrap;
-width:140px;
+/* 🌸 FLOWER HIGHLIGHT MENU */
+.palette {
+    position: absolute;
+    top: 45px;
+    display: none;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 10px 25px rgba(255,120,170,0.2);
 }
 
-.swatch{
-width:22px;
-height:22px;
-border-radius:6px;
-cursor:pointer;
-border:none;
+.color {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin: 2px;
 }
 </style>
 </head>
@@ -159,76 +159,74 @@ border:none;
 
 <div class="app">
 
+<!-- SIDEBAR -->
 <div class="sidebar">
-<div class="logo">✧LessyDocs✧</div>
-<button onclick="newDoc()">+ New</button>
-<div id="docs"></div>
+    <div class="logo">✧LessyDocs✧</div>
+    <button class="new-btn" onclick="newDoc()">+ New</button>
+    <div id="docs"></div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
+<!-- TOPBAR -->
 <div class="topbar">
 
-<div class="file">
-<button onclick="toggleMenu()">File</button>
-<div id="menu" class="drop">
-<button onclick="save()">Save</button>
-<button onclick="pdf()">PDF</button>
-<button onclick="del()">Delete</button>
-</div>
-</div>
+    <!-- FILE -->
+    <div class="menu">
+        <button onclick="toggleMenu()">File</button>
+        <div id="menu" class="drop">
+            <button onclick="save()">Save</button>
+            <button onclick="pdf()">PDF</button>
+            <button onclick="del()">Delete</button>
+        </div>
+    </div>
 
-<input id="title" class="title"/>
+    <input id="title" class="title" placeholder="Untitled"/>
 
-<div class="tools">
+    <!-- TOOLS -->
+    <div class="tools">
 
-<button onclick="cmd('bold')"><b>B</b></button>
-<button onclick="cmd('italic')"><i>I</i></button>
-<button onclick="cmd('underline')"><u>U</u></button>
+        <button onclick="cmd('bold')"><b>B</b></button>
+        <button onclick="cmd('italic')"><i>I</i></button>
+        <button onclick="cmd('underline')"><u>U</u></button>
 
-<!-- ALIGNMENT -->
-<button onclick="cmd('justifyLeft')">⬅</button>
-<button onclick="cmd('justifyCenter')">⬌</button>
-<button onclick="cmd('justifyRight')">➡</button>
+        <!-- ALIGN -->
+        <button onclick="cmd('justifyLeft')">⬅</button>
+        <button onclick="cmd('justifyCenter')">⬌</button>
+        <button onclick="cmd('justifyRight')">➡</button>
 
-<!-- FONT SIZE -->
-<select onchange="size(this.value)">
-<option value="14px">14</option>
-<option value="18px" selected>18</option>
-<option value="24px">24</option>
-</select>
+        <!-- FONT SIZE -->
+        <select onchange="size(this.value)">
+            <option value="14px">14</option>
+            <option value="18px" selected>18</option>
+            <option value="24px">24</option>
+        </select>
 
-<!-- FONT FAMILY -->
-<select onchange="font(this.value)">
-<option value="Nunito">Cute</option>
-<option value="Quicksand">Y2K</option>
-<option value="Caveat">Handwritten</option>
-<option value="VT323">Retro</option>
-</select>
+        <!-- FONT -->
+        <select onchange="font(this.value)">
+            <option value="Nunito">Cute</option>
+            <option value="Quicksand">Y2K</option>
+            <option value="Caveat">Handwritten</option>
+            <option value="VT323">Retro</option>
+            <option value="Playfair Display">Elegant</option>
+        </select>
 
-<!-- 🌸 FLOWER HIGHLIGHT -->
-<div style="position:relative">
-<button onclick="togglePalette()">🌸</button>
+        <!-- 🌸 FLOWER HIGHLIGHT -->
+        <button onclick="togglePalette()">🌸</button>
 
-<div id="palette" class="palette">
+        <div id="palette" class="palette">
+            <button class="color" style="background:#d52d00" onclick="hl('#d52d00')"></button>
+            <button class="color" style="background:#ff9a56" onclick="hl('#ff9a56')"></button>
+            <button class="color" style="background:#ffffff" onclick="hl('#ffffff')"></button>
+            <button class="color" style="background:#d162a4" onclick="hl('#d162a4')"></button>
+            <button class="color" style="background:#a30262" onclick="hl('#a30262')"></button>
+        </div>
 
-<!-- LESBIAN FLAG GRADIENT RANGE -->
-<button class="swatch" style="background:#d52d00" onclick="hl('#d52d00')"></button>
-<button class="swatch" style="background:#ff9a56" onclick="hl('#ff9a56')"></button>
-<button class="swatch" style="background:#ffffff" onclick="hl('#ffffff')"></button>
-<button class="swatch" style="background:#d362a4" onclick="hl('#d362a4')"></button>
-<button class="swatch" style="background:#a30262" onclick="hl('#a30262')"></button>
-
-<!-- soft blended gradient option -->
-<button class="swatch" style="background:linear-gradient(45deg,#ff9a56,#ffffff,#d362a4)" onclick="hlGradient()"></button>
-
-</div>
+    </div>
 </div>
 
-</div>
-
-</div>
-
+<!-- EDITOR -->
 <div id="editor" class="editor" contenteditable="true"></div>
 
 </div>
@@ -236,110 +234,114 @@ border:none;
 </div>
 
 <script>
+let docs = JSON.parse(localStorage.getItem("docs")) || [];
+let current = null;
 
-let docs = JSON.parse(localStorage.getItem("docs")||"[]");
-let current=null;
+const ed = document.getElementById("editor");
+const title = document.getElementById("title");
 
-const ed=document.getElementById("editor");
-const title=document.getElementById("title");
-
-/* MENU */
+/* FILE MENU */
 function toggleMenu(){
-document.getElementById("menu").style.display=
-document.getElementById("menu").style.display==="block"?"none":"block";
+    document.getElementById("menu").style.display =
+    document.getElementById("menu").style.display === "block" ? "none" : "block";
+}
+
+/* 🌸 PALETTE */
+function togglePalette(){
+    let p = document.getElementById("palette");
+    p.style.display = p.style.display === "block" ? "none" : "block";
 }
 
 /* DOCS */
 function newDoc(){
-let d={id:Date.now(),title:"Untitled",content:""};
-docs.unshift(d);
-current=d.id;
-render();
-load();
-save();
-}
-
-function render(){
-document.getElementById("docs").innerHTML="";
-docs.forEach(d=>{
-let div=document.createElement("div");
-div.className="doc";
-div.innerText=d.title;
-div.onclick=()=>{current=d.id;load()};
-document.getElementById("docs").appendChild(div);
-});
+    let d = {id:Date.now(), title:"Untitled", content:""};
+    docs.unshift(d);
+    current = d.id;
+    load();
+    render();
+    save();
 }
 
 function load(){
-let d=docs.find(x=>x.id===current);
-if(!d)return;
-title.value=d.title;
-ed.innerHTML=d.content;
+    let d = docs.find(x=>x.id===current);
+    if(!d) return;
+    title.value = d.title;
+    ed.innerHTML = d.content;
 }
 
-function save(){
-let d=docs.find(x=>x.id===current);
-if(!d)return;
-d.title=title.value;
-d.content=ed.innerHTML;
-localStorage.setItem("docs",JSON.stringify(docs));
+function render(){
+    document.getElementById("docs").innerHTML = "";
+    docs.forEach(d=>{
+        let div = document.createElement("div");
+        div.className = "doc";
+        div.innerText = d.title;
+        div.onclick = ()=>{
+            current = d.id;
+            load();
+        };
+        document.getElementById("docs").appendChild(div);
+    });
 }
 
 function del(){
-docs=docs.filter(x=>x.id!==current);
-current=docs[0]?.id||null;
-render();load();save();
+    docs = docs.filter(x=>x.id!==current);
+    current = docs[0]?.id || null;
+    render();
+    load();
+    save();
+}
+
+/* SAVE */
+function save(){
+    let d = docs.find(x=>x.id===current);
+    if(!d) return;
+    d.title = title.value;
+    d.content = ed.innerHTML;
+    localStorage.setItem("docs", JSON.stringify(docs));
 }
 
 /* EDITING */
-function cmd(c){document.execCommand(c)}
+function cmd(c){ document.execCommand(c); }
 
-function size(s){
-document.execCommand("fontSize",false,"7");
-document.querySelectorAll("font[size='7']").forEach(f=>{
-f.style.fontSize=s;
-f.removeAttribute("size");
-});
-}
-
-function font(f){
-document.execCommand("fontName",false,f);
-}
-
-/* 🌸 HIGHLIGHT */
 function hl(color){
-document.execCommand("hiliteColor",false,color);
+    document.execCommand("hiliteColor", false, color);
 }
 
-/* gradient highlight */
-function hlGradient(){
-document.execCommand("hiliteColor",false,"#ff9a56");
-setTimeout(()=>document.execCommand("hiliteColor",false,"#d362a4"),50);
+/* FONT SIZE */
+function size(s){
+    document.execCommand("fontSize", false, "7");
+    document.querySelectorAll("font[size='7']").forEach(f=>{
+        f.style.fontSize = s;
+        f.removeAttribute("size");
+    });
 }
 
-/* PALETTE */
-function togglePalette(){
-let p=document.getElementById("palette");
-p.style.display=p.style.display==="flex"?"none":"flex";
+/* FONT */
+function font(f){
+    document.execCommand("fontName", false, f);
 }
 
 /* PDF */
 function pdf(){
-const {jsPDF}=window.jspdf;
-const doc=new jsPDF();
-doc.text(title.value,10,10);
-doc.text(ed.innerText,10,20);
-doc.save("doc.pdf");
+    const { jsPDF } = window.jspdf;
+    const p = new jsPDF();
+    p.text(title.value, 10, 10);
+    p.text(ed.innerText, 10, 20);
+    p.save("doc.pdf");
 }
 
-/* AUTO */
-ed.addEventListener("input",save);
-title.addEventListener("input",save);
+/* AUTO SAVE */
+ed.addEventListener("input", save);
+title.addEventListener("input", save);
 
 /* INIT */
-if(docs.length){current=docs[0].id;load()}else{newDoc()}
+if(docs.length){
+    current = docs[0].id;
+    load();
+}else{
+    newDoc();
+}
 render();
-
 </script>
 
 </body>
