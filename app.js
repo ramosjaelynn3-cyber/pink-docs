@@ -1,61 +1,172 @@
-// ---------- EDITOR ----------
-const quill = new Quill('#editor', {
-  theme: 'snow'
-});
+let docs = JSON.parse(localStorage.getItem("pinkDocs")) || [];
+let currentDocId = null;
 
-// ---------- CHARACTER DATA ----------
-const characters = {
-  luna: {
-    name: "🌙 Luna",
-    info: "A soft moon goddess character.",
-    fanart: ["https://placekitten.com/200/200"]
-  },
-  mika: {
-    name: "💗 Mika",
-    info: "A cheerful pink magical girl.",
-    fanart: ["https://placekitten.com/201/201"]
-  }
-};
+const editor = document.getElementById("editor");
+const titleInput = document.getElementById("titleInput");
+const docList = document.getElementById("docList");
+const wordCount = document.getElementById("wordCount");
 
-// ---------- POPUP ----------
-function openCard(id) {
-  const char = characters[id];
-
-  document.getElementById("charName").innerText = char.name;
-  document.getElementById("charInfo").innerText = char.info;
-
-  const fanartDiv = document.getElementById("fanart");
-  fanartDiv.innerHTML = "";
-
-  char.fanart.forEach(img => {
-    const image = document.createElement("img");
-    image.src = img;
-    image.style.width = "110px";
-    image.style.borderRadius = "12px";
-    image.style.margin = "6px";
-    image.style.boxShadow = "0 4px 10px rgba(0,0,0,0.15)";
-    fanartDiv.appendChild(image);
-  });
-
-  const popup = document.getElementById("popup");
-  popup.classList.remove("hidden");
+/* FILE MENU */
+function toggleFileMenu() {
+    document.getElementById("fileDropdown").classList.toggle("hidden");
 }
 
-// ---------- LOGIN----------
-const supabase = supabase.createClient(
-  "https://hnvaddvdhmoigjosutnq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhudmFkZHZkaG1vaWdqb3N1dG5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTczMTgsImV4cCI6MjA5NDkzMzMxOH0.kUk7dU4aAMXA7Mxizx6ak6IrJ04q4eVsufiBYNjGp6A"
-);
+/* SAVE */
+function saveDocs() {
+    localStorage.setItem("pinkDocs", JSON.stringify(docs));
+}
 
-async function login() {
-  const email = prompt("Email:");
-  const password = prompt("Password:");
+function manualSave() {
+    updateDoc();
+    saveDocs();
+    alert("Saved ✨");
+}
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+/* CREATE */
+function createDoc() {
+    const doc = {
+        id: Date.now(),
+        title: "Untitled",
+        content: ""
+    };
 
-  if (error) alert(error.message);
-  else alert("Logged in!");
+    docs.unshift(doc);
+    currentDocId = doc.id;
+
+    saveDocs();
+    renderDocs();
+    loadDoc();
+}
+
+/* DELETE */
+function deleteDoc() {
+    docs = docs.filter(d => d.id !== currentDocId);
+
+    if (docs.length === 0) {
+        createDoc();
+        return;
+    }
+
+    currentDocId = docs[0].id;
+    saveDocs();
+    renderDocs();
+    loadDoc();
+}
+
+/* LOAD */
+function loadDoc() {
+    const doc = docs.find(d => d.id === currentDocId);
+    if (!doc) return;
+
+    titleInput.value = doc.title;
+    editor.value = doc.content;
+    updateWordCount();
+}
+
+/* UPDATE */
+function updateDoc() {
+    const doc = docs.find(d => d.id === currentDocId);
+    if (!doc) return;
+
+    doc.title = titleInput.value;
+    doc.content = editor.value;
+}
+
+/* RENDER */
+function renderDocs() {
+    docList.innerHTML = "";
+
+    docs.forEach(doc => {
+        const div = document.createElement("div");
+        div.className = "doc-item";
+
+        div.innerHTML = `
+            <b>${doc.title}</b>
+            <div style="font-size:12px;opacity:0.6">
+                ${doc.content.slice(0,40)}
+            </div>
+        `;
+
+        div.onclick = () => {
+            currentDocId = doc.id;
+            loadDoc();
+        };
+
+        docList.appendChild(div);
+    });
+}
+
+/* WORD COUNT */
+function updateWordCount() {
+    const words = editor.value.trim().split(/\s+/).filter(Boolean).length;
+    wordCount.textContent = words;
+}
+
+/* PDF EXPORT */
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    const title = titleInput.value || "document";
+    const text = editor.value;
+
+    pdf.setFontSize(16);
+    pdf.text(title, 10, 10);
+
+    pdf.setFontSize(12);
+    const lines = pdf.splitTextToSize(text, 180);
+    pdf.text(lines, 10, 20);
+
+    pdf.save(title + ".pdf");
+}
+
+/* STYLE CONTROLS */
+function changeFont(font) {
+    const map = {
+        Cute: "Nunito",
+        Y2K: "Quicksand",
+        Typewriter: "Courier New",
+        Diary: "Georgia",
+        Elegant: "Playfair Display",
+        Cyber: "Space Grotesk",
+        Handwritten: "Caveat",
+        "Retro Terminal": "VT323"
+    };
+
+    document.documentElement.style.setProperty("--font", map[font]);
+}
+
+function changeSize(size) {
+    document.documentElement.style.setProperty("--size", size);
+}
+
+function toggleBold() {
+    const current = getComputedStyle(document.documentElement)
+        .getPropertyValue("--weight").trim();
+
+    document.documentElement.style.setProperty(
+        "--weight",
+        current === "bold" ? "normal" : "bold"
+    );
+}
+
+/* EVENTS */
+editor.addEventListener("input", () => {
+    updateDoc();
+    updateWordCount();
+    saveDocs();
+});
+
+titleInput.addEventListener("input", () => {
+    updateDoc();
+    saveDocs();
+});
+
+/* INIT */
+if (docs.length === 0) {
+    createDoc();
+} else {
+    currentDocId = docs[0].id;
+    renderDocs();
+    loadDoc();
 }
