@@ -5,202 +5,146 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>✧LessyDocs✧</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Playfair+Display:wght@400;700&family=Space+Grotesk:wght@400;700&family=Caveat:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Caveat&family=VT323&family=Space+Grotesk&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    font-family: 'Nunito', sans-serif;
-
-    background:
-        radial-gradient(circle at top left, #ffd6ec 0%, transparent 30%),
-        radial-gradient(circle at bottom right, #ffb6d9 0%, transparent 30%),
-        linear-gradient(135deg, #ffe6f3, #ffcce6);
-
+    margin: 0;
+    font-family: Nunito;
+    background: linear-gradient(135deg,#ffe6f3,#ffcce6);
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
     color: #5b2a45;
 }
 
 .app {
     display: flex;
     height: 100vh;
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(18px);
 }
 
 /* SIDEBAR */
 .sidebar {
-    width: 280px;
+    width: 270px;
     background: rgba(255,255,255,0.4);
+    padding: 20px;
     border-right: 2px solid rgba(255,255,255,0.6);
-    padding: 24px;
-    box-shadow: 8px 0 20px rgba(255, 130, 180, 0.15);
 }
 
 .logo {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 26px;
     color: #ff4fa0;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    margin-bottom: 15px;
 }
 
-.new-doc-btn {
+.new-btn {
     width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #ff80bf, #ff4fa0);
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 16px;
-}
-
-/* DOCS */
-.doc-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.doc-item {
     padding: 12px;
+    border: none;
     border-radius: 14px;
-    background: rgba(255,255,255,0.5);
+    background: #ff4fa0;
+    color: white;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-.doc-item:hover {
-    transform: scale(1.02);
-    background: rgba(255,255,255,0.8);
+/* DOC LIST */
+.doc {
+    padding: 10px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    cursor: pointer;
 }
 
 /* MAIN */
 .main {
     flex: 1;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    padding: 24px;
 }
 
-/* TOP BAR (CUTE FOCUSED) */
+/* TOPBAR */
 .topbar {
     display: flex;
+    gap: 10px;
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-
     background: rgba(255,255,255,0.45);
-    padding: 14px;
-    border-radius: 22px;
-
-    backdrop-filter: blur(20px);
-    box-shadow: 0 12px 30px rgba(255,120,170,0.18);
+    padding: 12px;
+    border-radius: 18px;
 }
 
 /* FILE MENU */
-.file {
+.menu {
     position: relative;
 }
 
-.file button {
+.menu button {
     border: none;
-    padding: 10px 14px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.7);
-    cursor: pointer;
-    font-weight: bold;
-    color: #7a2d57;
-}
-
-.dropdown {
-    position: absolute;
-    top: 42px;
-    left: 0;
-
-    background: rgba(255,255,255,0.9);
-    border-radius: 14px;
     padding: 10px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    box-shadow: 0 12px 25px rgba(255,120,170,0.25);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.7);
 }
 
-.hidden { display: none; }
+.drop {
+    position: absolute;
+    top: 40px;
+    background: white;
+    border-radius: 12px;
+    padding: 8px;
+    display: none;
+}
 
-.dropdown button {
+.drop button {
+    display: block;
     border: none;
     background: transparent;
-    padding: 8px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.dropdown button:hover {
-    background: rgba(255,182,217,0.3);
+    padding: 6px;
 }
 
 /* TITLE */
 .title {
     flex: 1;
-    padding: 12px;
-    border-radius: 16px;
+    padding: 10px;
+    border-radius: 12px;
     border: none;
-    background: rgba(255,255,255,0.6);
-    font-size: 20px;
-    color: #7a2d57;
-    font-weight: bold;
 }
 
-/* TOOLS */
+/* TOOLBAR */
 .tools {
     display: flex;
     gap: 6px;
-    flex-wrap: wrap;
+    align-items: center;
 }
 
 .tools button,
 .tools select {
     border: none;
-    padding: 8px 10px;
-    border-radius: 12px;
+    padding: 8px;
+    border-radius: 10px;
     background: rgba(255,255,255,0.7);
+}
+
+/* HIGHLIGHT COLORS (LESBIAN FLAG) */
+.color {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: none;
     cursor: pointer;
 }
 
-/* EDITOR */
 .editor {
     flex: 1;
-    margin-top: 16px;
-
+    margin-top: 15px;
+    padding: 25px;
     background: rgba(255,255,255,0.55);
-    border-radius: 28px;
-    padding: 32px;
-
-    border: 2px solid rgba(255,255,255,0.6);
-
-    box-shadow: 0 12px 35px rgba(255, 120, 170, 0.18);
-
-    overflow-y: auto;
+    border-radius: 24px;
     outline: none;
-    font-size: 18px;
-    line-height: 1.8;
+    overflow-y: auto;
 }
-
-/* SCROLL FIX */
-body { overflow-y: auto; }
 </style>
 </head>
 
@@ -211,114 +155,151 @@ body { overflow-y: auto; }
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">✧LessyDocs✧</div>
-    <button class="new-doc-btn" onclick="createDoc()">+ New</button>
-    <div class="doc-list" id="docList"></div>
+    <button class="new-btn" onclick="newDoc()">+ New</button>
+    <div id="docs"></div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-    <div class="topbar">
+<div class="topbar">
 
-        <div class="file">
-            <button onclick="toggleFile()">File ✦</button>
-            <div id="menu" class="dropdown hidden">
-                <button onclick="save()">💾 Save</button>
-                <button onclick="downloadPDF()">📄 PDF</button>
-                <button onclick="deleteDoc()">🗑 Delete</button>
-            </div>
+    <div class="menu">
+        <button onclick="toggle()">File</button>
+        <div id="menu" class="drop">
+            <button onclick="save()">Save</button>
+            <button onclick="download()">PDF</button>
+            <button onclick="del()">Delete</button>
         </div>
-
-        <input id="title" class="title" placeholder="Untitled"/>
-
-        <div class="tools">
-            <button onclick="cmd('bold')"><b>B</b></button>
-            <button onclick="cmd('italic')"><i>I</i></button>
-            <button onclick="cmd('underline')"><u>U</u></button>
-            <button onclick="cmd('justifyCenter')">⬌</button>
-            <button onclick="highlight()">🌸</button>
-
-            <select onchange="font(this.value)">
-                <option value="Nunito">Cute</option>
-                <option value="Quicksand">Y2K</option>
-                <option value="Caveat">Handwritten</option>
-                <option value="VT323">Retro</option>
-            </select>
-        </div>
-
     </div>
 
-    <div id="editor" class="editor" contenteditable="true"></div>
+    <input id="title" class="title" placeholder="Untitled"/>
+
+    <div class="tools">
+
+        <button onclick="cmd('bold')"><b>B</b></button>
+        <button onclick="cmd('italic')"><i>I</i></button>
+        <button onclick="cmd('underline')"><u>U</u></button>
+
+        <select onchange="size(this.value)">
+            <option value="14px">14</option>
+            <option value="18px" selected>18</option>
+            <option value="24px">24</option>
+        </select>
+
+        <!-- LESBIAN FLAG HIGHLIGHT -->
+        <button class="color" style="background:#d52d00" onclick="hl('#d52d00')"></button>
+        <button class="color" style="background:#ff9a56" onclick="hl('#ff9a56')"></button>
+        <button class="color" style="background:#ffffff" onclick="hl('#ffffff')"></button>
+        <button class="color" style="background:#d162a4" onclick="hl('#d162a4')"></button>
+        <button class="color" style="background:#a30262" onclick="hl('#a30262')"></button>
+
+    </div>
+</div>
+
+<div id="editor" class="editor" contenteditable="true"></div>
 
 </div>
 
 </div>
 
 <script>
-let editor = document.getElementById("editor");
-let title = document.getElementById("title");
+let docs = JSON.parse(localStorage.getItem("docs")) || [];
+let current = null;
 
-/* MENU */
-function toggleFile(){
-    document.getElementById("menu").classList.toggle("hidden");
+const ed = document.getElementById("editor");
+const title = document.getElementById("title");
+
+/* FILE */
+function toggle(){
+    document.getElementById("menu").style.display =
+    document.getElementById("menu").style.display === "block" ? "none" : "block";
 }
 
-/* DOC */
 function save(){
-    localStorage.setItem("doc", JSON.stringify({
-        title: title.value,
-        content: editor.innerHTML
-    }));
-}
-
-function load(){
-    let d = JSON.parse(localStorage.getItem("doc"));
+    let d = docs.find(x => x.id === current);
     if(!d) return;
-    title.value = d.title;
-    editor.innerHTML = d.content;
+
+    d.title = title.value;
+    d.content = ed.innerHTML;
+    localStorage.setItem("docs", JSON.stringify(docs));
 }
 
-function createDoc(){
-    editor.innerHTML = "";
-    title.value = "";
+/* DOCS */
+function newDoc(){
+    let d = {id:Date.now(), title:"Untitled", content:""};
+    docs.unshift(d);
+    current = d.id;
+    load();
+    render();
     save();
 }
 
-function deleteDoc(){
-    localStorage.removeItem("doc");
-    editor.innerHTML = "";
-    title.value = "";
+function load(){
+    let d = docs.find(x => x.id === current);
+    if(!d) return;
+    title.value = d.title;
+    ed.innerHTML = d.content;
+}
+
+function render(){
+    document.getElementById("docs").innerHTML = "";
+    docs.forEach(d=>{
+        let div = document.createElement("div");
+        div.className = "doc";
+        div.innerText = d.title;
+        div.onclick = ()=>{
+            current = d.id;
+            load();
+        };
+        document.getElementById("docs").appendChild(div);
+    });
+}
+
+function del(){
+    docs = docs.filter(x=>x.id!==current);
+    current = docs[0]?.id || null;
+    render();
+    load();
+    save();
 }
 
 /* EDITING */
-function cmd(c){
-    document.execCommand(c);
+function cmd(c){ document.execCommand(c); }
+
+function hl(color){
+    document.execCommand("hiliteColor", false, color);
 }
 
-function highlight(){
-    document.execCommand("hiliteColor", false, "#ffb6d9");
-}
-
-function font(f){
-    document.execCommand("fontName", false, f);
+function size(s){
+    document.execCommand("fontSize", false, "7");
+    document.querySelectorAll("font[size='7']").forEach(f=>{
+        f.style.fontSize = s;
+        f.removeAttribute("size");
+    });
 }
 
 /* PDF */
-function downloadPDF(){
+function download(){
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
-
-    pdf.text(title.value || "doc", 10, 10);
-    pdf.text(editor.innerText, 10, 20);
-
+    pdf.text(title.value, 10, 10);
+    pdf.text(ed.innerText, 10, 20);
     pdf.save("doc.pdf");
 }
 
-/* AUTO SAVE */
-editor.addEventListener("input", save);
+/* AUTO */
+ed.addEventListener("input", save);
 title.addEventListener("input", save);
 
-load();
+/* INIT */
+if(docs.length){
+    current = docs[0].id;
+    load();
+}else{
+    newDoc();
+}
+render();
 </script>
 
 </body>
