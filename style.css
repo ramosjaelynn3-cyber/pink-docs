@@ -6,48 +6,65 @@
 
 body {
     font-family: 'Nunito', sans-serif;
-    background: linear-gradient(135deg, #ffe6f3, #ffcce6);
+    background:
+        radial-gradient(circle at top left, #ffd6ec 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #ffb6d9 0%, transparent 30%),
+        linear-gradient(135deg, #ffe6f3, #ffcce6);
     height: 100vh;
     overflow: hidden;
     color: #5b2a45;
 }
 
+/* APP GLASS */
 .app {
     display: flex;
     height: 100vh;
+    backdrop-filter: blur(12px);
 }
 
 /* SIDEBAR */
 .sidebar {
     width: 280px;
-    background: rgba(255,255,255,0.5);
-    padding: 20px;
+    background: rgba(255,255,255,0.45);
+    border-right: 2px solid rgba(255,255,255,0.5);
+    padding: 24px;
     overflow-y: auto;
+    box-shadow: 8px 0 20px rgba(255, 130, 180, 0.15);
 }
 
 .logo {
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 700;
     color: #ff4fa0;
     margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
 .new-doc-btn {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     border: none;
-    border-radius: 12px;
-    background: #ff4fa0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ff80bf, #ff4fa0);
     color: white;
-    margin-bottom: 15px;
+    font-weight: bold;
     cursor: pointer;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 16px rgba(255, 79, 160, 0.3);
 }
 
 .doc-item {
-    padding: 12px;
-    background: rgba(255,255,255,0.6);
-    border-radius: 12px;
+    padding: 14px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 16px;
     margin-bottom: 10px;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.doc-item:hover {
+    transform: scale(1.02);
+    background: rgba(255,255,255,0.8);
 }
 
 /* MAIN */
@@ -55,15 +72,16 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 24px;
 }
 
+/* TOPBAR */
 .topbar {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 /* FILE MENU */
@@ -73,49 +91,77 @@ body {
 
 .file-menu button {
     padding: 10px 14px;
+    border-radius: 14px;
     border: none;
-    border-radius: 10px;
     background: rgba(255,255,255,0.7);
     cursor: pointer;
+    font-weight: bold;
+    color: #7a2d57;
 }
 
 .dropdown {
     position: absolute;
-    top: 40px;
+    top: 45px;
     left: 0;
-    background: white;
-    border-radius: 12px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 14px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(255, 120, 170, 0.2);
 }
 
-.hidden {
-    display: none;
+.hidden { display: none; }
+
+.dropdown button {
+    border: none;
+    background: transparent;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
+.dropdown button:hover {
+    background: rgba(255,182,217,0.3);
+}
+
+/* TITLE */
 .title-input {
     flex: 1;
-    padding: 10px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 14px;
     border: none;
-    background: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.6);
     font-size: 18px;
+    color: #7a2d57;
 }
 
+/* CONTROLS */
 .controls {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
+.controls select,
+.controls button {
+    border: none;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* EDITOR */
 .editor {
     flex: 1;
-    background: rgba(255,255,255,0.6);
-    border-radius: 20px;
-    padding: 20px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 28px;
+    padding: 36px;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow: 0 10px 30px rgba(255, 120, 170, 0.12);
 }
 
 textarea {
@@ -128,4 +174,13 @@ textarea {
     font-size: var(--size, 18px);
     font-family: var(--font, 'Nunito');
     font-weight: var(--weight, normal);
+    color: #5c2945;
+}
+
+/* STATS */
+.stats {
+    background: rgba(255,255,255,0.5);
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-weight: bold;
 }
