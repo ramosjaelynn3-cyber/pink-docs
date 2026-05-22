@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>✧JaeDocs✧</title>
+<title>✧ JaeDocs ✧</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Playfair+Display:wght@400;700&family=Space+Grotesk:wght@400;700&family=Caveat:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Caveat&family=VT323&family=Space+Grotesk&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -20,63 +20,60 @@
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-    <div class="logo">✧Docs✧</div>
+    <div class="logo">✧ LessyDocs ✧</div>
 
-    <button class="new-doc-btn" onclick="createDoc()">+ New Document</button>
+    <button class="new-btn" onclick="createDoc()">＋ New Doc</button>
 
-    <div class="doc-list" id="docList"></div>
+    <div id="docList"></div>
 </aside>
 
 <!-- MAIN -->
 <main class="main">
 
-   <div class="topbar cute-bar">
+<!-- 🌸 TOP BAR (FULL CUTE TOOLBAR) -->
+<div class="topbar">
 
-    <!-- FILE -->
-    <div class="file-menu">
-        <button onclick="toggleFileMenu()">✦File✦ </button>
-
-        <div id="fileDropdown" class="dropdown hidden">
-            <button onclick="manualSave()">Save</button>
+    <!-- FILE MENU -->
+    <div class="menu">
+        <button onclick="toggleMenu()">File ✦</button>
+        <div id="menuDrop" class="dropdown hidden">
+            <button onclick="saveDoc()">💾 Save</button>
             <button onclick="downloadPDF()">Export PDF</button>
             <button onclick="deleteDoc()">Delete</button>
         </div>
     </div>
 
-    <!-- TITLE -->
-    <input id="titleInput" class="title-input" placeholder="New Document"/>
+    <input id="title" class="title" placeholder="Untitled Document"/>
 
-    <!-- ✨ FORMATTING RIBBON -->
-    <div class="ribbon">
+    <!-- ✨ EDITING TOOLS -->
+    <div class="tools">
 
-        <div class="group">
-            <button onclick="toggleBold()" title="Bold">B</button>
-            <button onclick="toggleItalic()" title="Italic"><i>I</i></button>
-            <button onclick="toggleUnderline()" title="Underline"><u>U</u></button>
-        </div>
+        <button onclick="cmd('bold')"><b>B</b></button>
+        <button onclick="cmd('italic')"><i>I</i></button>
+        <button onclick="cmd('underline')"><u>U</u></button>
 
-        <div class="group">
-            <button onclick="alignText('left')">⬅</button>
-            <button onclick="alignText('center')">⬍</button>
-            <button onclick="alignText('right')">➡</button>
-        </div>
+        <button onclick="highlight()">🌸</button>
 
-        <div class="group">
-            <button onclick="undo()">↶</button>
-            <button onclick="redo()">↷</button>
-        </div>
+        <button onclick="align('left')">⬅</button>
+        <button onclick="align('center')">⬌</button>
+        <button onclick="align('right')">➡</button>
 
-        <div class="stats">
-            <span id="wordCount">0</span> words
-        </div>
+        <select onchange="changeFont(this.value)">
+            <option value="Nunito">Cute</option>
+            <option value="Quicksand">Y2K</option>
+            <option value="Caveat">Handwritten</option>
+            <option value="VT323">Retro</option>
+            <option value="Space Grotesk">Cyber</option>
+        </select>
 
     </div>
+
 </div>
 
-    <!-- EDITOR -->
-    <div class="editor">
-        <textarea id="editor" placeholder="✧Start writing...✧"></textarea>
-    </div>
+<!-- ✍ EDITOR -->
+<div class="editor-wrapper">
+    <div id="editor" contenteditable="true" class="editor"></div>
+</div>
 
 </main>
 
