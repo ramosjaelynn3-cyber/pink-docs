@@ -238,3 +238,56 @@ textarea {
 
     font-weight: bold;
 }
+/* ✨ CUTE TOP BAR RIBBON */
+.cute-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    padding: 12px 14px;
+    border-radius: 22px;
+
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 30px rgba(255, 120, 170, 0.15);
+}
+
+/* ribbon container */
+.ribbon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* grouped button clusters */
+.group {
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 14px;
+
+    background: rgba(255,255,255,0.55);
+}
+
+/* cute toolbar buttons */
+.ribbon button {
+    border: none;
+    background: rgba(255,255,255,0.7);
+
+    padding: 8px 10px;
+    border-radius: 12px;
+
+    cursor: pointer;
+    font-weight: bold;
+
+    transition: 0.15s ease;
+}
+
+.ribbon button:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 6px 14px rgba(255, 120, 170, 0.25);
+}
