@@ -152,3 +152,52 @@ if (!docs.length) {
     renderDocs();
     loadDoc();
 }
+let history = [];
+let redoStack = [];
+
+/* SAVE STATE FOR UNDO */
+function pushState() {
+    history.push(editor.value);
+    if (history.length > 50) history.shift();
+    redoStack = [];
+}
+
+/* UNDO / REDO */
+function undo() {
+    if (!history.length) return;
+    redoStack.push(editor.value);
+    editor.value = history.pop();
+    updateDoc();
+    updateWordCount();
+}
+
+function redo() {
+    if (!redoStack.length) return;
+    history.push(editor.value);
+    editor.value = redoStack.pop();
+    updateDoc();
+    updateWordCount();
+}
+
+/* TEXT STYLE SIMULATION (textarea limitation workaround) */
+function toggleItalic() {
+    editor.style.fontStyle =
+        editor.style.fontStyle === "italic" ? "normal" : "italic";
+}
+
+function toggleUnderline() {
+    editor.style.textDecoration =
+        editor.style.textDecoration === "underline" ? "none" : "underline";
+}
+
+function alignText(dir) {
+    editor.style.textAlign = dir;
+}
+
+/* track changes for undo */
+editor.addEventListener("input", () => {
+    pushState();
+    updateDoc();
+    saveDocs();
+    updateWordCount();
+});
