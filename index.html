@@ -31,7 +31,10 @@ body {
     padding: 20px;
 }
 
-.logo { font-size: 26px; color: #ff4fa0; }
+.logo {
+    font-size: 26px;
+    color: #ff4fa0;
+}
 
 .new-btn {
     width: 100%;
@@ -110,7 +113,7 @@ body {
     background: rgba(255,255,255,0.7);
 }
 
-/* 🌸 palettes */
+/* palettes */
 .palette,
 .colorPalette {
     position: absolute;
@@ -119,6 +122,7 @@ body {
     padding: 10px;
     border-radius: 16px;
     background: rgba(255,255,255,0.95);
+    box-shadow: 0 10px 25px rgba(255,120,170,0.2);
 }
 
 .color {
@@ -148,6 +152,18 @@ body {
     border-radius: 24px;
     outline: none;
     overflow-y: auto;
+}
+
+/* 💗 NEW SIZE TOOL STYLE */
+.sizeBox {
+    width: 55px;
+    text-align: center;
+}
+.heartBtn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
 }
 </style>
 </head>
@@ -187,7 +203,7 @@ body {
         <button onclick="cmd('justifyCenter')">⬌</button>
         <button onclick="cmd('justifyRight')">➡</button>
 
-        <!-- SIZE PRESET -->
+        <!-- ✔ UPDATED SIZE TOOL -->
         <select onchange="setSize(this.value)">
             <option value="12px">12</option>
             <option value="14px">14</option>
@@ -195,15 +211,13 @@ body {
             <option value="18px" selected>18</option>
             <option value="24px">24</option>
             <option value="30px">30</option>
-            <option value="custom">Custom</option>
         </select>
 
-        <!-- ⭐ FIXED CUSTOM SIZE BOX -->
-        <input id="customSize"
-               maxlength="3"
-               placeholder="px"
-               style="display:none; width:55px;"
-               onkeydown="handleCustomSize(event)">
+        <!-- 💗 CUSTOM SIZE INPUT + HEART -->
+        <input id="customSize" class="sizeBox" maxlength="3" placeholder="px"
+               onkeydown="if(event.key==='Enter') applyCustomSize()">
+
+        <button class="heartBtn" onclick="applyCustomSize()">💗</button>
 
         <select onchange="font(this.value)">
             <option value="Nunito">Nunito</option>
@@ -213,7 +227,6 @@ body {
         </select>
 
         <button onclick="togglePalette()">🌸</button>
-        <button onclick="toggleColor()">🌺</button>
 
         <div id="palette" class="palette">
             <button class="color" style="background:#d52d00" onclick="hl('#d52d00')"></button>
@@ -223,6 +236,8 @@ body {
             <button class="color" style="background:#a30262" onclick="hl('#a30262')"></button>
             <button class="clear" onclick="clearHL()">❌ clear</button>
         </div>
+
+        <button onclick="toggleColor()">🌺</button>
 
         <div id="colorPalette" class="colorPalette">
             <input type="color" onchange="fontColor(this.value)">
@@ -244,7 +259,56 @@ let current = null;
 const ed = document.getElementById("editor");
 const title = document.getElementById("title");
 
-/* MENU */
+/* SIZE SYSTEM */
+function setSize(val){
+    document.execCommand("fontSize", false, "7");
+    document.querySelectorAll("font[size='7']").forEach(el=>{
+        el.removeAttribute("size");
+        el.style.fontSize = val;
+    });
+}
+
+/* 💗 CUSTOM SIZE APPLY (NEW FIX) */
+function applyCustomSize(){
+    let size = document.getElementById("customSize").value;
+    if(!size) return;
+
+    if(!size.includes("px") && !size.includes("em") && !size.includes("%")){
+        size = size + "px";
+    }
+
+    document.execCommand("fontSize", false, "7");
+    document.querySelectorAll("font[size='7']").forEach(el=>{
+        el.removeAttribute("size");
+        el.style.fontSize = size;
+    });
+}
+
+/* FONT */
+function font(f){
+    document.execCommand("fontName", false, f);
+}
+
+/* HIGHLIGHT */
+function hl(color){
+    document.execCommand("hiliteColor", false, color);
+}
+
+function clearHL(){
+    document.execCommand("hiliteColor", false, "transparent");
+}
+
+/* FONT COLOR */
+function toggleColor(){
+    let p = document.getElementById("colorPalette");
+    p.style.display = p.style.display === "block" ? "none" : "block";
+}
+
+function fontColor(c){
+    document.execCommand("foreColor", false, c);
+}
+
+/* FILE */
 function toggleMenu(){
     document.getElementById("menu").style.display =
     document.getElementById("menu").style.display === "block" ? "none" : "block";
@@ -255,7 +319,9 @@ function newDoc(){
     let d = {id:Date.now(), title:"Untitled", content:""};
     docs.unshift(d);
     current = d.id;
-    load(); render(); save();
+    load();
+    render();
+    save();
 }
 
 function load(){
@@ -282,7 +348,9 @@ function render(){
 function del(){
     docs = docs.filter(x=>x.id!==current);
     current = docs[0]?.id || null;
-    render(); load(); save();
+    render();
+    load();
+    save();
 }
 
 function save(){
@@ -295,64 +363,6 @@ function save(){
 
 /* EDIT */
 function cmd(c){ document.execCommand(c); }
-
-function hl(c){ document.execCommand("hiliteColor", false, c); }
-
-function clearHL(){ document.execCommand("hiliteColor", false, "transparent"); }
-
-/* ⭐ FIXED CUSTOM SIZE SYSTEM */
-function setSize(v){
-    const box = document.getElementById("customSize");
-
-    if(v === "custom"){
-        box.style.display = "inline-block";
-        box.focus();
-        return;
-    }
-
-    box.style.display = "none";
-
-    document.execCommand("fontSize", false, "7");
-    document.querySelectorAll("font[size='7']").forEach(el=>{
-        el.removeAttribute("size");
-        el.style.fontSize = v;
-    });
-}
-
-/* ENTER TO APPLY SIZE */
-function handleCustomSize(e){
-    if(e.key !== "Enter") return;
-
-    let size = e.target.value.trim();
-    if(!size) return;
-
-    document.execCommand("fontSize", false, "7");
-    document.querySelectorAll("font[size='7']").forEach(el=>{
-        el.removeAttribute("size");
-        el.style.fontSize = size + (isNaN(size) ? "" : "px");
-    });
-}
-
-/* FONT */
-function font(f){
-    document.execCommand("fontName", false, f);
-}
-
-/* COLOR */
-function toggleColor(){
-    let p = document.getElementById("colorPalette");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-}
-
-function fontColor(c){
-    document.execCommand("foreColor", false, c);
-}
-
-/* PALETTE */
-function togglePalette(){
-    let p = document.getElementById("palette");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-}
 
 /* PDF */
 function pdf(){
