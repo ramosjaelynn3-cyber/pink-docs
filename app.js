@@ -6,12 +6,10 @@ const titleInput = document.getElementById("titleInput");
 const docList = document.getElementById("docList");
 const wordCount = document.getElementById("wordCount");
 
-/* FILE MENU */
 function toggleFileMenu() {
     document.getElementById("fileDropdown").classList.toggle("hidden");
 }
 
-/* SAVE */
 function saveDocs() {
     localStorage.setItem("pinkDocs", JSON.stringify(docs));
 }
@@ -22,7 +20,6 @@ function manualSave() {
     alert("Saved ✨");
 }
 
-/* CREATE */
 function createDoc() {
     const doc = {
         id: Date.now(),
@@ -38,11 +35,10 @@ function createDoc() {
     loadDoc();
 }
 
-/* DELETE */
 function deleteDoc() {
     docs = docs.filter(d => d.id !== currentDocId);
 
-    if (docs.length === 0) {
+    if (!docs.length) {
         createDoc();
         return;
     }
@@ -53,7 +49,6 @@ function deleteDoc() {
     loadDoc();
 }
 
-/* LOAD */
 function loadDoc() {
     const doc = docs.find(d => d.id === currentDocId);
     if (!doc) return;
@@ -63,7 +58,6 @@ function loadDoc() {
     updateWordCount();
 }
 
-/* UPDATE */
 function updateDoc() {
     const doc = docs.find(d => d.id === currentDocId);
     if (!doc) return;
@@ -72,7 +66,6 @@ function updateDoc() {
     doc.content = editor.value;
 }
 
-/* RENDER */
 function renderDocs() {
     docList.innerHTML = "";
 
@@ -80,12 +73,7 @@ function renderDocs() {
         const div = document.createElement("div");
         div.className = "doc-item";
 
-        div.innerHTML = `
-            <b>${doc.title}</b>
-            <div style="font-size:12px;opacity:0.6">
-                ${doc.content.slice(0,40)}
-            </div>
-        `;
+        div.innerHTML = `<b>${doc.title}</b>`;
 
         div.onclick = () => {
             currentDocId = doc.id;
@@ -96,13 +84,11 @@ function renderDocs() {
     });
 }
 
-/* WORD COUNT */
 function updateWordCount() {
     const words = editor.value.trim().split(/\s+/).filter(Boolean).length;
     wordCount.textContent = words;
 }
 
-/* PDF */
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
