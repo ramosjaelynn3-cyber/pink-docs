@@ -105,16 +105,17 @@ body {
 }
 
 .tools button,
-.tools select,
-.tools input {
+.tools select {
     border: none;
     padding: 8px;
     border-radius: 10px;
     background: rgba(255,255,255,0.7);
+    cursor: pointer;
 }
 
-/* 🌸 palette */
-.palette {
+/* 🌸 palettes */
+.palette,
+.colorPalette {
     position: absolute;
     top: 45px;
     display: none;
@@ -190,17 +191,22 @@ body {
         <button onclick="cmd('justifyCenter')">⬌</button>
         <button onclick="cmd('justifyRight')">➡</button>
 
+        <!-- FONT SIZE + CUSTOM IN SAME DROPDOWN -->
         <select onchange="setSize(this.value)">
+            <option value="12px">12</option>
             <option value="14px">14</option>
+            <option value="16px">16</option>
             <option value="18px" selected>18</option>
             <option value="24px">24</option>
             <option value="30px">30</option>
+            <option value="custom">Custom…</option>
         </select>
 
-        <input id="customSize" placeholder="custom px"
+        <input id="customSize"
+               placeholder="px / em"
+               style="display:none"
                onkeydown="if(event.key==='Enter') setCustomSize()">
 
-        <!-- ✔ REAL FONT NAMES (FIXED) -->
         <select onchange="font(this.value)">
             <option value="Nunito">Nunito</option>
             <option value="Quicksand">Quicksand</option>
@@ -208,6 +214,7 @@ body {
             <option value="VT323">VT323</option>
         </select>
 
+        <!-- 🌸 HIGHLIGHT -->
         <button onclick="togglePalette()">🌸</button>
 
         <div id="palette" class="palette">
@@ -216,8 +223,14 @@ body {
             <button class="color" style="background:#ffffff" onclick="hl('#ffffff')"></button>
             <button class="color" style="background:#d162a4" onclick="hl('#d162a4')"></button>
             <button class="color" style="background:#a30262" onclick="hl('#a30262')"></button>
-
             <button class="clear" onclick="clearHL()">❌ clear</button>
+        </div>
+
+        <!-- 🌺 FONT COLOR -->
+        <button onclick="toggleColor()">🌺</button>
+
+        <div id="colorPalette" class="colorPalette">
+            <input type="color" onchange="fontColor(this.value)">
         </div>
 
     </div>
@@ -236,19 +249,10 @@ let current = null;
 const ed = document.getElementById("editor");
 const title = document.getElementById("title");
 
-/* FILE */
+/* MENU */
 function toggleMenu(){
     document.getElementById("menu").style.display =
     document.getElementById("menu").style.display === "block" ? "none" : "block";
-}
-
-/* SAVE */
-function save(){
-    let d = docs.find(x=>x.id===current);
-    if(!d) return;
-    d.title = title.value;
-    d.content = ed.innerHTML;
-    localStorage.setItem("docs", JSON.stringify(docs));
 }
 
 /* DOCS */
@@ -290,6 +294,14 @@ function del(){
     save();
 }
 
+function save(){
+    let d = docs.find(x=>x.id===current);
+    if(!d) return;
+    d.title = title.value;
+    d.content = ed.innerHTML;
+    localStorage.setItem("docs", JSON.stringify(docs));
+}
+
 /* EDITING */
 function cmd(c){ document.execCommand(c); }
 
@@ -301,18 +313,25 @@ function clearHL(){
     document.execCommand("hiliteColor", false, "transparent");
 }
 
-/* SIZE */
-function setSize(size){
+/* FONT SIZE */
+function setSize(val){
+    if(val === "custom"){
+        document.getElementById("customSize").style.display = "inline-block";
+        return;
+    }
+    document.getElementById("customSize").style.display = "none";
+
     document.execCommand("fontSize", false, "7");
     document.querySelectorAll("font[size='7']").forEach(el=>{
         el.removeAttribute("size");
-        el.style.fontSize = size;
+        el.style.fontSize = val;
     });
 }
 
 function setCustomSize(){
     let size = document.getElementById("customSize").value;
     if(!size) return;
+
     document.execCommand("fontSize", false, "7");
     document.querySelectorAll("font[size='7']").forEach(el=>{
         el.removeAttribute("size");
@@ -325,7 +344,17 @@ function font(f){
     document.execCommand("fontName", false, f);
 }
 
-/* PALETTE */
+/* 🌺 FONT COLOR */
+function toggleColor(){
+    let p = document.getElementById("colorPalette");
+    p.style.display = p.style.display === "block" ? "none" : "block";
+}
+
+function fontColor(c){
+    document.execCommand("foreColor", false, c);
+}
+
+/* PALETTES */
 function togglePalette(){
     let p = document.getElementById("palette");
     p.style.display = p.style.display === "block" ? "none" : "block";
