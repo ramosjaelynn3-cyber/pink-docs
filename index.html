@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Playfair+Display:wght@400;700&family=Space+Grotesk:wght@400;700&family=Caveat:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 
+<!-- PDF LIBRARY -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 * {
     margin: 0;
@@ -50,26 +53,27 @@ body {
     font-weight: 700;
     margin-bottom: 24px;
     color: #ff4fa0;
-    text-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
-.new-doc-btn {
+.new-doc-btn, .action-btn {
     width: 100%;
     padding: 14px;
     border: none;
     border-radius: 16px;
-    background: linear-gradient(135deg, #ff80bf, #ff4fa0);
     color: white;
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    margin-bottom: 22px;
+    margin-bottom: 12px;
     transition: 0.2s ease;
-    box-shadow: 0 6px 16px rgba(255, 79, 160, 0.3);
 }
 
-.new-doc-btn:hover {
-    transform: translateY(-2px) scale(1.02);
+.new-doc-btn {
+    background: linear-gradient(135deg, #ff80bf, #ff4fa0);
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #ff5fa2, #d94b8a);
 }
 
 .doc-list {
@@ -107,7 +111,7 @@ body {
     opacity: 0.7;
 }
 
-/* MAIN AREA */
+/* MAIN */
 
 .main {
     flex: 1;
@@ -117,12 +121,12 @@ body {
 }
 
 .topbar {
-    position: relative;
-    z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .title-input {
@@ -135,31 +139,17 @@ body {
     width: 60%;
     color: #7a2d57;
     outline: none;
-    box-shadow: 0 4px 12px rgba(255,255,255,0.3);
-}
-
-.stats {
-    background: rgba(255,255,255,0.5);
-    padding: 12px 16px;
-    border-radius: 14px;
-    font-weight: bold;
 }
 
 .editor {
-    position: relative;
-    z-index: 1;
     flex: 1;
     background: rgba(255,255,255,0.55);
     border-radius: 28px;
     padding: 36px;
-    border: 2px solid rgba(255,255,255,0.6);
-    box-shadow: 0 10px 30px rgba(255, 120, 170, 0.12);
     overflow-y: auto;
 }
 
 textarea {
-    font-family: var(--editor-font, 'Nunito', sans-serif);
-    pointer-events: auto;
     width: 100%;
     height: 100%;
     border: none;
@@ -169,180 +159,49 @@ textarea {
     font-size: var(--editor-size);
     line-height: 1.8;
     color: #5c2945;
-    font-weight: var(--editor-weight);
-}
-
-textarea::placeholder {
-    color: #cc7ca5;
-}
-
-.footer {
-    margin-top: 14px;
-    text-align: right;
-    font-size: 14px;
-    opacity: 0.7;
-}
-
-.sparkle {
-    position: fixed;
-    pointer-events: none;
-    font-size: 18px;
-    animation: float 2s linear forwards;
-}
-
-@keyframes float {
-    0% {
-        opacity: 1;
-        transform: translateY(0px) scale(1);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-80px) scale(1.5);
-    }
-}
-
-@media (max-width: 900px) {
-    .sidebar {
-        width: 220px;
-    }
-
-    .title-input {
-        width: 100%;
-    }
-
-    .topbar {
-        flex-direction: column;
-        gap: 12px;
-        align-items: stretch;
-    }
 }
 
 </style>
 </head>
+
 <body>
 
 <div class="app">
 
-    <aside class="sidebar">
-        <div class="logo">✧LessyDocs✧</div>
+<aside class="sidebar">
+    <div class="logo">✧LessyDocs✧</div>
 
-        <button class="new-doc-btn" onclick="createDoc()">
-            + New Document
-        </button>
+    <button class="new-doc-btn" onclick="createDoc()">+ New Document</button>
 
-        <div class="doc-list" id="docList"></div>
-    </aside>
+    <!-- NEW ACTION BUTTONS -->
+    <button class="action-btn" onclick="manualSave()">💾 Save</button>
+    <button class="action-btn" onclick="downloadPDF()">📄 Download PDF</button>
+    <button class="action-btn" onclick="deleteDoc()">🗑 Delete</button>
 
-    <main class="main">
+    <div class="doc-list" id="docList"></div>
+</aside>
 
-        <div class="topbar">
-            <input
-                id="titleInput"
-                class="title-input"
-                placeholder="New Document"
-            />
+<main class="main">
 
-            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+    <div class="topbar">
+        <input id="titleInput" class="title-input" placeholder="New Document" />
 
-                <select
-                    onchange="changeFont(this.value)"
-                    onclick="event.stopPropagation()"
-                    id="fontSelect"
-                    style="
-                        border:none;
-                        padding:12px 16px;
-                        border-radius:14px;
-                        background:rgba(255,255,255,0.7);
-                        font-weight:bold;
-                        color:#7a2d57;
-                        cursor:pointer;
-                    "
-                >
-                    <option>LessyTarif</option>
-                    <option>Y2K</option>
-                    <option>Typewriter</option>
-                    <option>Diary</option>
-                    <option>ComicSans</option>
-                    <option>Elegant</option>
-                    <option>Cyber</option>
-                    <option>Handwritten</option>
-                    <option>Retro Terminal</option>
-                </select>
-
-                <select
-                    onchange="changeSize(this.value)"
-                    onclick="event.stopPropagation()"
-                    id="sizeSelect"
-                    style="
-                        border:none;
-                        padding:12px 16px;
-                        border-radius:14px;
-                        background:rgba(255,255,255,0.7);
-                        font-weight:bold;
-                        color:#7a2d57;
-                        cursor:pointer;
-                    "
-                >
-                    <option value="16px">16</option>
-                    <option value="18px" selected>18</option>
-                    <option value="20px">20</option>
-                    <option value="22px">22</option>
-                    <option value="24px">24</option>
-                    <option value="28px">28</option>
-                </select>
-
-                <button
-                    type="button"
-                    onclick="toggleBold()"
-                    style="
-                        border:none;
-                        padding:12px 18px;
-                        border-radius:14px;
-                        background:rgba(255,255,255,0.7);
-                        font-weight:bold;
-                        color:#7a2d57;
-                        cursor:pointer;
-                    "
-                >
-                    B
-                </button>
-
-                <div class="stats">
-                    <span id="wordCount">0</span> words
-                </div>
-
-            </div>
+        <div class="stats">
+            <span id="wordCount">0</span> words
         </div>
+    </div>
 
-        <div class="editor">
-            <textarea
-                id="editor"
-                placeholder="✧Start writing... ✧"
-            ></textarea>
-        </div>
+    <div class="editor">
+        <textarea id="editor" placeholder="✧Start writing... ✧"></textarea>
+    </div>
 
-        <div class="footer">
-            autosaves instantly ♡
-        </div>
-
-    </main>
+</main>
 
 </div>
 
 <script>
 
-let docs;
-
-try {
-    docs = JSON.parse(localStorage.getItem('pinkDocs')) || [];
-
-    if (!Array.isArray(docs)) {
-        docs = [];
-    }
-} catch {
-    docs = [];
-}
+let docs = JSON.parse(localStorage.getItem('pinkDocs')) || [];
 let currentDocId = null;
 
 const editor = document.getElementById('editor');
@@ -376,15 +235,11 @@ function renderDocs() {
         const div = document.createElement('div');
         div.className = 'doc-item';
 
-        if (doc.id === currentDocId) {
-            div.classList.add('active');
-        }
+        if (doc.id === currentDocId) div.classList.add('active');
 
         div.innerHTML = `
             <div class="doc-title">${doc.title}</div>
-            <div class="doc-preview">
-                ${doc.content.substring(0, 40) || 'Empty document'}
-            </div>
+            <div class="doc-preview">${doc.content.substring(0,40) || 'Empty document'}</div>
         `;
 
         div.onclick = () => {
@@ -399,18 +254,15 @@ function renderDocs() {
 
 function loadCurrentDoc() {
     const doc = docs.find(d => d.id === currentDocId);
-
     if (!doc) return;
 
     titleInput.value = doc.title;
     editor.value = doc.content;
-
     updateWordCount();
 }
 
 function updateCurrentDoc() {
     const doc = docs.find(d => d.id === currentDocId);
-
     if (!doc) return;
 
     doc.title = titleInput.value || 'Untitled Document';
@@ -421,19 +273,55 @@ function updateCurrentDoc() {
     updateWordCount();
 }
 
-function updateWordCount() {
-    const words = editor.value
-        .trim()
-        .split(/\s+/)
-        .filter(word => word.length > 0).length;
+function manualSave() {
+    updateCurrentDoc();
+    saveDocs();
+    alert("Saved!");
+}
 
+function deleteDoc() {
+    if (!currentDocId) return;
+
+    docs = docs.filter(d => d.id !== currentDocId);
+
+    if (docs.length > 0) {
+        currentDocId = docs[0].id;
+    } else {
+        createDoc();
+        return;
+    }
+
+    saveDocs();
+    renderDocs();
+    loadCurrentDoc();
+}
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const title = titleInput.value;
+    const content = editor.value;
+
+    doc.setFontSize(16);
+    doc.text(title, 10, 10);
+
+    doc.setFontSize(12);
+    const split = doc.splitTextToSize(content, 180);
+    doc.text(split, 10, 20);
+
+    doc.save((title || "document") + ".pdf");
+}
+
+function updateWordCount() {
+    const words = editor.value.trim().split(/\s+/).filter(Boolean).length;
     wordCount.textContent = words;
 }
 
 editor.addEventListener('input', updateCurrentDoc);
 titleInput.addEventListener('input', updateCurrentDoc);
 
-if (!docs || docs.length === 0) {
+if (!docs.length) {
     createDoc();
 } else {
     currentDocId = docs[0].id;
@@ -441,94 +329,7 @@ if (!docs || docs.length === 0) {
     loadCurrentDoc();
 }
 
-/* FONT SYSTEM */
-
-const fonts = {
-    "Cute": "'Nunito', sans-serif",
-    "Y2K": "'Quicksand', sans-serif",
-    "Typewriter": "'Courier New', monospace",
-    "Diary": "'Georgia', serif",
-    "Bubblegum": "'Comic Sans MS', cursive",
-    "Elegant": "'Playfair Display', serif",
-    "Cyber": "'Space Grotesk', sans-serif",
-    "Handwritten": "'Caveat', cursive",
-    "Retro Terminal": "'VT323', monospace"
-};
-
-const savedFont = localStorage.getItem('pinkDocsFont') || 'Cute';
-
-const savedSize = localStorage.getItem('pinkDocsSize') || '18px';
-const savedWeight = localStorage.getItem('pinkDocsWeight') || 'normal';
-
-window.addEventListener('DOMContentLoaded', () => {
-    const fontSelect = document.getElementById('fontSelect');
-    const sizeSelect = document.getElementById('sizeSelect');
-
-    if (fontSelect) {
-        fontSelect.value = savedFont;
-    }
-
-    if (sizeSelect) {
-        sizeSelect.value = savedSize;
-    }
-
-    document.documentElement.style.setProperty('--editor-font', fonts[savedFont]);
-    document.documentElement.style.setProperty('--editor-size', savedSize);
-    document.documentElement.style.setProperty('--editor-weight', savedWeight);
-});
-
-/* preserve old documents safely */
-
-if (!localStorage.getItem('pinkDocsBackup')) {
-    localStorage.setItem('pinkDocsBackup', JSON.stringify(docs));
-}
-
- localStorage.getItem('pinkDocsSize') || '18px';
-
-
-function changeFont(fontName) {
-    document.documentElement.style.setProperty('--editor-font', fonts[fontName]);
-    localStorage.setItem('pinkDocsFont', fontName);
-}
-
-function changeSize(size) {
-    document.documentElement.style.setProperty('--editor-size', size);
-    localStorage.setItem('pinkDocsSize', size);
-}
-
-function toggleBold() {
-    const currentWeight = getComputedStyle(document.documentElement)
-        .getPropertyValue('--editor-weight');
-
-    const newWeight = currentWeight.trim() === 'bold'
-        ? 'normal'
-        : 'bold';
-
-    document.documentElement.style.setProperty('--editor-weight', newWeight);
-    localStorage.setItem('pinkDocsWeight', newWeight);
-}
-
-/* Sparkles */
-
-document.addEventListener('mousemove', (e) => {
-    if (Math.random() > 0.92) {
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-        sparkle.innerHTML = '✦';
-
-        sparkle.style.left = e.pageX + 'px';
-        sparkle.style.top = e.pageY + 'px';
-
-        document.body.appendChild(sparkle);
-
-        setTimeout(() => {
-            sparkle.remove();
-        }, 2000);
-    }
-});
-
 </script>
 
 </body>
 </html>
-```
