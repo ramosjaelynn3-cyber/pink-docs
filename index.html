@@ -91,10 +91,17 @@ body {
 }
 
 .title {
-    flex: 1;
-    padding: 10px;
+    width: 120px;              /* ✨ compact default */
+    padding: 8px;
     border-radius: 12px;
     border: none;
+    transition: all 0.25s ease;
+}
+
+/* ✨ expand on click */
+.title:focus {
+    width: 260px;
+    background: white;
 }
 
 .tools {
@@ -154,16 +161,10 @@ body {
     overflow-y: auto;
 }
 
-/* 💗 NEW SIZE TOOL STYLE */
+/* 💗 ONLY SIZE BOX NOW */
 .sizeBox {
     width: 55px;
     text-align: center;
-}
-.heartBtn {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 18px;
 }
 </style>
 </head>
@@ -191,6 +192,7 @@ body {
         </div>
     </div>
 
+    <!-- ✨ SMALL EXPANDING TITLE -->
     <input id="title" class="title" placeholder="Untitled"/>
 
     <div class="tools">
@@ -203,7 +205,13 @@ body {
         <button onclick="cmd('justifyCenter')">⬌</button>
         <button onclick="cmd('justifyRight')">➡</button>
 
-        <!-- ✔ UPDATED SIZE TOOL -->
+        <!-- ONLY SIZE BOX NOW -->
+        <input id="customSize"
+               class="sizeBox"
+               placeholder="px"
+               maxlength="3"
+               onkeydown="if(event.key==='Enter') applySize()">
+
         <select onchange="setSize(this.value)">
             <option value="12px">12</option>
             <option value="14px">14</option>
@@ -212,12 +220,6 @@ body {
             <option value="24px">24</option>
             <option value="30px">30</option>
         </select>
-
-        <!-- 💗 CUSTOM SIZE INPUT + HEART -->
-        <input id="customSize" class="sizeBox" maxlength="3" placeholder="px"
-               onkeydown="if(event.key==='Enter') applyCustomSize()">
-
-        <button class="heartBtn" onclick="applyCustomSize()">💗</button>
 
         <select onchange="font(this.value)">
             <option value="Nunito">Nunito</option>
@@ -237,12 +239,6 @@ body {
             <button class="clear" onclick="clearHL()">❌ clear</button>
         </div>
 
-        <button onclick="toggleColor()">🌺</button>
-
-        <div id="colorPalette" class="colorPalette">
-            <input type="color" onchange="fontColor(this.value)">
-        </div>
-
     </div>
 </div>
 
@@ -259,28 +255,34 @@ let current = null;
 const ed = document.getElementById("editor");
 const title = document.getElementById("title");
 
-/* SIZE SYSTEM */
-function setSize(val){
-    document.execCommand("fontSize", false, "7");
-    document.querySelectorAll("font[size='7']").forEach(el=>{
-        el.removeAttribute("size");
-        el.style.fontSize = val;
-    });
-}
+/* TITLE SAVE */
+title.addEventListener("focus", () => title.dataset.old = title.value);
+title.addEventListener("input", save);
 
-/* 💗 CUSTOM SIZE APPLY (NEW FIX) */
-function applyCustomSize(){
+/* SIZE APPLY */
+function applySize(){
     let size = document.getElementById("customSize").value;
     if(!size) return;
 
     if(!size.includes("px") && !size.includes("em") && !size.includes("%")){
-        size = size + "px";
+        size += "px";
     }
 
     document.execCommand("fontSize", false, "7");
     document.querySelectorAll("font[size='7']").forEach(el=>{
         el.removeAttribute("size");
         el.style.fontSize = size;
+    });
+
+    document.getElementById("customSize").value = "";
+}
+
+/* PRESET SIZE */
+function setSize(val){
+    document.execCommand("fontSize", false, "7");
+    document.querySelectorAll("font[size='7']").forEach(el=>{
+        el.removeAttribute("size");
+        el.style.fontSize = val;
     });
 }
 
@@ -296,16 +298,6 @@ function hl(color){
 
 function clearHL(){
     document.execCommand("hiliteColor", false, "transparent");
-}
-
-/* FONT COLOR */
-function toggleColor(){
-    let p = document.getElementById("colorPalette");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-}
-
-function fontColor(c){
-    document.execCommand("foreColor", false, c);
 }
 
 /* FILE */
@@ -375,7 +367,6 @@ function pdf(){
 
 /* AUTO SAVE */
 ed.addEventListener("input", save);
-title.addEventListener("input", save);
 
 /* INIT */
 if(docs.length){
