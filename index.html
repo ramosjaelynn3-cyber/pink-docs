@@ -33,13 +33,13 @@
     <!-- TOP BAR -->
     <div class="topbar">
 
-        <!-- FILE MENU -->
+        <!-- FILE MENU (CUTE RESTORED STYLE) -->
         <div class="file-menu">
-            <button onclick="toggleFileMenu()">File ▾</button>
+            <button onclick="toggleFileMenu()">✦ File</button>
 
             <div id="fileDropdown" class="dropdown hidden">
                 <button onclick="manualSave()">💾 Save</button>
-                <button onclick="downloadPDF()">📄 Download PDF</button>
+                <button onclick="downloadPDF()">📄 Export PDF</button>
                 <button onclick="deleteDoc()">🗑 Delete</button>
             </div>
         </div>
@@ -48,7 +48,7 @@
 
         <div class="controls">
 
-            <select onchange="changeFont(this.value)" id="fontSelect">
+            <select onchange="changeFont(this.value)">
                 <option value="Cute">Cute</option>
                 <option value="Y2K">Y2K</option>
                 <option value="Typewriter">Typewriter</option>
@@ -59,12 +59,11 @@
                 <option value="Retro Terminal">Retro Terminal</option>
             </select>
 
-            <select onchange="changeSize(this.value)" id="sizeSelect">
+            <select onchange="changeSize(this.value)">
                 <option value="16px">16</option>
                 <option value="18px" selected>18</option>
-                <option value="20px">20</option>
-                <option value="24px">24</option>
-                <option value="28px">28</option>
+                <option value="22px">22</option>
+                <option value="26px">26</option>
             </select>
 
             <button onclick="toggleBold()">B</button>
