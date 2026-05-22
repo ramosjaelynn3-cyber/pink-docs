@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>✧LessyDocs✧</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Caveat&family=VT323&family=Space+Grotesk&family=Playfair+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Caveat&family=VT323&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -25,18 +25,15 @@ body {
     backdrop-filter: blur(18px);
 }
 
-/* SIDEBAR */
 .sidebar {
     width: 270px;
     background: rgba(255,255,255,0.4);
     padding: 20px;
-    border-right: 2px solid rgba(255,255,255,0.6);
 }
 
 .logo {
     font-size: 26px;
     color: #ff4fa0;
-    margin-bottom: 15px;
 }
 
 .new-btn {
@@ -57,7 +54,6 @@ body {
     cursor: pointer;
 }
 
-/* MAIN */
 .main {
     flex: 1;
     padding: 20px;
@@ -65,7 +61,6 @@ body {
     flex-direction: column;
 }
 
-/* TOPBAR */
 .topbar {
     display: flex;
     gap: 8px;
@@ -75,7 +70,6 @@ body {
     border-radius: 18px;
 }
 
-/* FILE */
 .menu {
     position: relative;
 }
@@ -96,7 +90,6 @@ body {
     display: none;
 }
 
-/* TITLE */
 .title {
     flex: 1;
     padding: 10px;
@@ -104,7 +97,6 @@ body {
     border: none;
 }
 
-/* TOOLS */
 .tools {
     display: flex;
     gap: 6px;
@@ -113,23 +105,12 @@ body {
 }
 
 .tools button,
-.tools select {
+.tools select,
+.tools input {
     border: none;
     padding: 8px;
     border-radius: 10px;
     background: rgba(255,255,255,0.7);
-    cursor: pointer;
-}
-
-/* EDITOR */
-.editor {
-    flex: 1;
-    margin-top: 15px;
-    padding: 25px;
-    background: rgba(255,255,255,0.55);
-    border-radius: 24px;
-    outline: none;
-    overflow-y: auto;
 }
 
 /* 🌸 palette */
@@ -139,7 +120,8 @@ body {
     display: none;
     padding: 10px;
     border-radius: 16px;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 10px 25px rgba(255,120,170,0.2);
 }
 
 .color {
@@ -148,6 +130,27 @@ body {
     border-radius: 6px;
     border: none;
     margin: 2px;
+    cursor: pointer;
+}
+
+.clear {
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px;
+    border-radius: 10px;
+    border: none;
+    background: #ffe0ea;
+    cursor: pointer;
+}
+
+.editor {
+    flex: 1;
+    margin-top: 15px;
+    padding: 25px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 24px;
+    outline: none;
+    overflow-y: auto;
 }
 </style>
 </head>
@@ -187,7 +190,6 @@ body {
         <button onclick="cmd('justifyCenter')">⬌</button>
         <button onclick="cmd('justifyRight')">➡</button>
 
-        <!-- ✅ FIXED SIZE SYSTEM -->
         <select onchange="setSize(this.value)">
             <option value="14px">14</option>
             <option value="18px" selected>18</option>
@@ -195,11 +197,15 @@ body {
             <option value="30px">30</option>
         </select>
 
+        <input id="customSize" placeholder="custom px"
+               onkeydown="if(event.key==='Enter') setCustomSize()">
+
+        <!-- ✔ REAL FONT NAMES (FIXED) -->
         <select onchange="font(this.value)">
-            <option value="Nunito">Cute</option>
-            <option value="Quicksand">Y2K</option>
-            <option value="Caveat">Handwritten</option>
-            <option value="VT323">Retro</option>
+            <option value="Nunito">Nunito</option>
+            <option value="Quicksand">Quicksand</option>
+            <option value="Caveat">Caveat</option>
+            <option value="VT323">VT323</option>
         </select>
 
         <button onclick="togglePalette()">🌸</button>
@@ -210,6 +216,8 @@ body {
             <button class="color" style="background:#ffffff" onclick="hl('#ffffff')"></button>
             <button class="color" style="background:#d162a4" onclick="hl('#d162a4')"></button>
             <button class="color" style="background:#a30262" onclick="hl('#a30262')"></button>
+
+            <button class="clear" onclick="clearHL()">❌ clear</button>
         </div>
 
     </div>
@@ -289,10 +297,23 @@ function hl(color){
     document.execCommand("hiliteColor", false, color);
 }
 
-/* ✅ FIXED FONT SIZE SYSTEM (STABLE WRAPPER METHOD) */
+function clearHL(){
+    document.execCommand("hiliteColor", false, "transparent");
+}
+
+/* SIZE */
 function setSize(size){
     document.execCommand("fontSize", false, "7");
+    document.querySelectorAll("font[size='7']").forEach(el=>{
+        el.removeAttribute("size");
+        el.style.fontSize = size;
+    });
+}
 
+function setCustomSize(){
+    let size = document.getElementById("customSize").value;
+    if(!size) return;
+    document.execCommand("fontSize", false, "7");
     document.querySelectorAll("font[size='7']").forEach(el=>{
         el.removeAttribute("size");
         el.style.fontSize = size;
