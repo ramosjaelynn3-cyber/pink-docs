@@ -49,7 +49,6 @@ body {
     cursor: pointer;
 }
 
-/* DOC LIST */
 .doc {
     padding: 10px;
     margin-top: 10px;
@@ -76,7 +75,7 @@ body {
     border-radius: 18px;
 }
 
-/* FILE MENU */
+/* FILE */
 .menu {
     position: relative;
 }
@@ -133,7 +132,7 @@ body {
     overflow-y: auto;
 }
 
-/* 🌸 FLOWER HIGHLIGHT MENU */
+/* 🌸 palette */
 .palette {
     position: absolute;
     top: 45px;
@@ -141,7 +140,6 @@ body {
     padding: 10px;
     border-radius: 16px;
     background: rgba(255,255,255,0.9);
-    box-shadow: 0 10px 25px rgba(255,120,170,0.2);
 }
 
 .color {
@@ -149,7 +147,6 @@ body {
     height: 22px;
     border-radius: 6px;
     border: none;
-    cursor: pointer;
     margin: 2px;
 }
 </style>
@@ -159,20 +156,16 @@ body {
 
 <div class="app">
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">✧LessyDocs✧</div>
     <button class="new-btn" onclick="newDoc()">+ New</button>
     <div id="docs"></div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-<!-- TOPBAR -->
 <div class="topbar">
 
-    <!-- FILE -->
     <div class="menu">
         <button onclick="toggleMenu()">File</button>
         <div id="menu" class="drop">
@@ -184,35 +177,31 @@ body {
 
     <input id="title" class="title" placeholder="Untitled"/>
 
-    <!-- TOOLS -->
     <div class="tools">
 
         <button onclick="cmd('bold')"><b>B</b></button>
         <button onclick="cmd('italic')"><i>I</i></button>
         <button onclick="cmd('underline')"><u>U</u></button>
 
-        <!-- ALIGN -->
         <button onclick="cmd('justifyLeft')">⬅</button>
         <button onclick="cmd('justifyCenter')">⬌</button>
         <button onclick="cmd('justifyRight')">➡</button>
 
-        <!-- FONT SIZE -->
-        <select onchange="size(this.value)">
+        <!-- ✅ FIXED SIZE SYSTEM -->
+        <select onchange="setSize(this.value)">
             <option value="14px">14</option>
             <option value="18px" selected>18</option>
             <option value="24px">24</option>
+            <option value="30px">30</option>
         </select>
 
-        <!-- FONT -->
         <select onchange="font(this.value)">
             <option value="Nunito">Cute</option>
             <option value="Quicksand">Y2K</option>
             <option value="Caveat">Handwritten</option>
             <option value="VT323">Retro</option>
-            <option value="Playfair Display">Elegant</option>
         </select>
 
-        <!-- 🌸 FLOWER HIGHLIGHT -->
         <button onclick="togglePalette()">🌸</button>
 
         <div id="palette" class="palette">
@@ -226,7 +215,6 @@ body {
     </div>
 </div>
 
-<!-- EDITOR -->
 <div id="editor" class="editor" contenteditable="true"></div>
 
 </div>
@@ -240,16 +228,19 @@ let current = null;
 const ed = document.getElementById("editor");
 const title = document.getElementById("title");
 
-/* FILE MENU */
+/* FILE */
 function toggleMenu(){
     document.getElementById("menu").style.display =
     document.getElementById("menu").style.display === "block" ? "none" : "block";
 }
 
-/* 🌸 PALETTE */
-function togglePalette(){
-    let p = document.getElementById("palette");
-    p.style.display = p.style.display === "block" ? "none" : "block";
+/* SAVE */
+function save(){
+    let d = docs.find(x=>x.id===current);
+    if(!d) return;
+    d.title = title.value;
+    d.content = ed.innerHTML;
+    localStorage.setItem("docs", JSON.stringify(docs));
 }
 
 /* DOCS */
@@ -291,15 +282,6 @@ function del(){
     save();
 }
 
-/* SAVE */
-function save(){
-    let d = docs.find(x=>x.id===current);
-    if(!d) return;
-    d.title = title.value;
-    d.content = ed.innerHTML;
-    localStorage.setItem("docs", JSON.stringify(docs));
-}
-
 /* EDITING */
 function cmd(c){ document.execCommand(c); }
 
@@ -307,18 +289,25 @@ function hl(color){
     document.execCommand("hiliteColor", false, color);
 }
 
-/* FONT SIZE */
-function size(s){
+/* ✅ FIXED FONT SIZE SYSTEM (STABLE WRAPPER METHOD) */
+function setSize(size){
     document.execCommand("fontSize", false, "7");
-    document.querySelectorAll("font[size='7']").forEach(f=>{
-        f.style.fontSize = s;
-        f.removeAttribute("size");
+
+    document.querySelectorAll("font[size='7']").forEach(el=>{
+        el.removeAttribute("size");
+        el.style.fontSize = size;
     });
 }
 
 /* FONT */
 function font(f){
     document.execCommand("fontName", false, f);
+}
+
+/* PALETTE */
+function togglePalette(){
+    let p = document.getElementById("palette");
+    p.style.display = p.style.display === "block" ? "none" : "block";
 }
 
 /* PDF */
