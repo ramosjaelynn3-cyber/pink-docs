@@ -1,64 +1,489 @@
+# Pink Y2K Writer Docs Website (GitHub Pages Ready)
+
+This is a complete single-file website you can upload directly to GitHub Pages.
+
+It includes:
+
+* Pink Y2K aesthetic
+* Sidebar for documents
+* Auto-save with localStorage
+* Word count
+* Cute animated UI
+* Fullscreen writing area
+* No backend required
+* Works entirely in browser
+
+---
+
+## 1. Create a GitHub Repository
+
+1. Go to urlGitHub[https://github.com](https://github.com)
+2. Click **New Repository**
+3. Name it something like:
+
+   ```
+   pink-writer-docs
+   ```
+4. Make it Public
+5. Click **Create Repository**
+
+---
+
+## 2. Create `index.html`
+
+Create a file called:
+
+```html
+index.html
+```
+
+Then paste THIS ENTIRE CODE into it:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Pink Docs</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pink Docs ✧</title>
 
-  <link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 
-  <!-- Quill Editor -->
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background:
+        radial-gradient(circle at top left, #ffd6ec 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #ffb6d9 0%, transparent 30%),
+        linear-gradient(135deg, #ffe6f3, #ffcce6);
+    height: 100vh;
+    overflow: hidden;
+    color: #5b2a45;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+    backdrop-filter: blur(12px);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 280px;
+    background: rgba(255,255,255,0.45);
+    border-right: 2px solid rgba(255,255,255,0.5);
+    padding: 24px;
+    overflow-y: auto;
+    box-shadow: 8px 0 20px rgba(255, 130, 180, 0.15);
+}
+
+.logo {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #ff4fa0;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+.new-doc-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ff80bf, #ff4fa0);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 22px;
+    transition: 0.2s ease;
+    box-shadow: 0 6px 16px rgba(255, 79, 160, 0.3);
+}
+
+.new-doc-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.doc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.doc-item {
+    padding: 14px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 2px solid transparent;
+}
+
+.doc-item:hover {
+    background: rgba(255,255,255,0.8);
+    transform: scale(1.02);
+}
+
+.doc-item.active {
+    border-color: #ff66ad;
+    background: rgba(255,255,255,0.9);
+}
+
+.doc-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.doc-preview {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* MAIN AREA */
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.title-input {
+    border: none;
+    background: rgba(255,255,255,0.6);
+    padding: 14px 18px;
+    border-radius: 16px;
+    font-size: 22px;
+    font-weight: bold;
+    width: 60%;
+    color: #7a2d57;
+    outline: none;
+    box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+}
+
+.stats {
+    background: rgba(255,255,255,0.5);
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-weight: bold;
+}
+
+.editor {
+    flex: 1;
+    background: rgba(255,255,255,0.55);
+    border-radius: 28px;
+    padding: 36px;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow: 0 10px 30px rgba(255, 120, 170, 0.12);
+    overflow-y: auto;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    resize: none;
+    outline: none;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #5c2945;
+    font-family: 'Nunito', sans-serif;
+}
+
+textarea::placeholder {
+    color: #cc7ca5;
+}
+
+.footer {
+    margin-top: 14px;
+    text-align: right;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.sparkle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    animation: float 2s linear forwards;
+}
+
+@keyframes float {
+    0% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(1.5);
+    }
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .title-input {
+        width: 100%;
+    }
+
+    .topbar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+}
+
+</style>
 </head>
-
 <body>
 
-  <div class="layout">
+<div class="app">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <h2>🌸 Characters</h2>
+    <aside class="sidebar">
+        <div class="logo">✧ Pink Docs</div>
 
-      <div class="card" onclick="openCard('luna')">
-        🌙 Luna
-      </div>
+        <button class="new-doc-btn" onclick="createDoc()">
+            + New Document
+        </button>
 
-      <div class="card" onclick="openCard('mika')">
-        💗 Mika
-      </div>
+        <div class="doc-list" id="docList"></div>
+    </aside>
 
-    </div>
+    <main class="main">
 
-    <!-- MAIN AREA -->
-    <div class="main">
+        <div class="topbar">
+            <input
+                id="titleInput"
+                class="title-input"
+                placeholder="Untitled Document"
+            />
 
-      <div class="topbar">
-        <h1>Pink Docs</h1>
-        <button onclick="login()">Login</button>
-      </div>
+            <div class="stats">
+                <span id="wordCount">0</span> words
+            </div>
+        </div>
 
-      <div id="editor"></div>
+        <div class="editor">
+            <textarea
+                id="editor"
+                placeholder="Start writing your masterpiece... ✧"
+            ></textarea>
+        </div>
 
-    </div>
+        <div class="footer">
+            autosaves instantly ♡
+        </div>
 
-  </div>
+    </main>
 
-  <!-- CHARACTER POPUP -->
-  <div id="popup" class="popup hidden">
-    <div class="popup-content">
-      <span onclick="closePopup()" class="close">✖</span>
-      <h2 id="charName"></h2>
-      <p id="charInfo"></p>
-      <div id="fanart"></div>
-    </div>
-  </div>
+</div>
 
-  <!-- Quill -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+let docs = JSON.parse(localStorage.getItem('pinkDocs')) || [];
+let currentDocId = null;
 
-  <script src="app.js"></script>
+const editor = document.getElementById('editor');
+const titleInput = document.getElementById('titleInput');
+const docList = document.getElementById('docList');
+const wordCount = document.getElementById('wordCount');
+
+function saveDocs() {
+    localStorage.setItem('pinkDocs', JSON.stringify(docs));
+}
+
+function createDoc() {
+    const newDoc = {
+        id: Date.now(),
+        title: 'Untitled Document',
+        content: ''
+    };
+
+    docs.unshift(newDoc);
+    currentDocId = newDoc.id;
+
+    saveDocs();
+    renderDocs();
+    loadCurrentDoc();
+}
+
+function renderDocs() {
+    docList.innerHTML = '';
+
+    docs.forEach(doc => {
+        const div = document.createElement('div');
+        div.className = 'doc-item';
+
+        if (doc.id === currentDocId) {
+            div.classList.add('active');
+        }
+
+        div.innerHTML = `
+            <div class="doc-title">${doc.title}</div>
+            <div class="doc-preview">
+                ${doc.content.substring(0, 40) || 'Empty document'}
+            </div>
+        `;
+
+        div.onclick = () => {
+            currentDocId = doc.id;
+            loadCurrentDoc();
+            renderDocs();
+        };
+
+        docList.appendChild(div);
+    });
+}
+
+function loadCurrentDoc() {
+    const doc = docs.find(d => d.id === currentDocId);
+
+    if (!doc) return;
+
+    titleInput.value = doc.title;
+    editor.value = doc.content;
+
+    updateWordCount();
+}
+
+function updateCurrentDoc() {
+    const doc = docs.find(d => d.id === currentDocId);
+
+    if (!doc) return;
+
+    doc.title = titleInput.value || 'Untitled Document';
+    doc.content = editor.value;
+
+    saveDocs();
+    renderDocs();
+    updateWordCount();
+}
+
+function updateWordCount() {
+    const words = editor.value
+        .trim()
+        .split(/\s+/)
+        .filter(word => word.length > 0).length;
+
+    wordCount.textContent = words;
+}
+
+editor.addEventListener('input', updateCurrentDoc);
+titleInput.addEventListener('input', updateCurrentDoc);
+
+if (docs.length === 0) {
+    createDoc();
+} else {
+    currentDocId = docs[0].id;
+    renderDocs();
+    loadCurrentDoc();
+}
+
+/* Sparkles */
+
+document.addEventListener('mousemove', (e) => {
+    if (Math.random() > 0.92) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.innerHTML = '✦';
+
+        sparkle.style.left = e.pageX + 'px';
+        sparkle.style.top = e.pageY + 'px';
+
+        document.body.appendChild(sparkle);
+
+        setTimeout(() => {
+            sparkle.remove();
+        }, 2000);
+    }
+});
+
+</script>
 
 </body>
 </html>
+```
+
+---
+
+## 3. Upload to GitHub
+
+1. Upload the `index.html` file to your repository
+2. Click:
+
+   ```
+   Settings → Pages
+   ```
+3. Under:
+
+   ```
+   Build and Deployment
+   ```
+
+   set:
+
+   ```
+   Source → Deploy from branch
+   ```
+4. Select:
+
+   ```
+   main branch
+   ```
+5. Save
+
+GitHub will generate a live website link after a minute or two.
+
+---
+
+## Optional Future Features
+
+You can later add:
+
+* folders
+* rich text formatting
+* cloud sync
+* password lock
+* pastel themes
+* Sanrio mode
+* custom fonts
+* export to PDF
+* typewriter mode
+* music player
+* sticker widgets
+* draggable windows
+* fake AIM/MSN messenger aesthetic
+
+---
+
+## Aesthetic Inspiration
+
+This design mixes:
+
+* 2000s webcore
+* kawaii UI
+* pink glassmorphism
+* old-school diary sites
+* Google Docs functionality
+* soft Y2K gradients
