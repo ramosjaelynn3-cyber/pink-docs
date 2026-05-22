@@ -102,25 +102,21 @@ function updateWordCount() {
     wordCount.textContent = words;
 }
 
-/* PDF EXPORT */
+/* PDF */
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
 
-    const title = titleInput.value || "document";
-    const text = editor.value;
-
     pdf.setFontSize(16);
-    pdf.text(title, 10, 10);
+    pdf.text(titleInput.value || "document", 10, 10);
 
     pdf.setFontSize(12);
-    const lines = pdf.splitTextToSize(text, 180);
-    pdf.text(lines, 10, 20);
+    pdf.text(pdf.splitTextToSize(editor.value, 180), 10, 20);
 
-    pdf.save(title + ".pdf");
+    pdf.save((titleInput.value || "document") + ".pdf");
 }
 
-/* STYLE CONTROLS */
+/* STYLE */
 function changeFont(font) {
     const map = {
         Cute: "Nunito",
@@ -153,8 +149,8 @@ function toggleBold() {
 /* EVENTS */
 editor.addEventListener("input", () => {
     updateDoc();
-    updateWordCount();
     saveDocs();
+    updateWordCount();
 });
 
 titleInput.addEventListener("input", () => {
@@ -163,7 +159,7 @@ titleInput.addEventListener("input", () => {
 });
 
 /* INIT */
-if (docs.length === 0) {
+if (!docs.length) {
     createDoc();
 } else {
     currentDocId = docs[0].id;
