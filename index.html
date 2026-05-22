@@ -117,6 +117,8 @@ body {
 }
 
 .topbar {
+    position: relative;
+    z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -144,6 +146,8 @@ body {
 }
 
 .editor {
+    position: relative;
+    z-index: 1;
     flex: 1;
     background: rgba(255,255,255,0.55);
     border-radius: 28px;
@@ -154,7 +158,8 @@ body {
 }
 
 textarea {
-    font-family: var(--editor-font);
+    font-family: var(--editor-font, 'Nunito', sans-serif);
+    pointer-events: auto;
     width: 100%;
     height: 100%;
     border: none;
@@ -242,6 +247,7 @@ textarea::placeholder {
 
                 <select
                     onchange="changeFont(this.value)"
+                    onclick="event.stopPropagation()"
                     id="fontSelect"
                     style="
                         border:none;
@@ -266,6 +272,7 @@ textarea::placeholder {
 
                 <select
                     onchange="changeSize(this.value)"
+                    onclick="event.stopPropagation()"
                     id="sizeSelect"
                     style="
                         border:none;
@@ -286,6 +293,7 @@ textarea::placeholder {
                 </select>
 
                 <button
+                    type="button"
                     onclick="toggleBold()"
                     style="
                         border:none;
@@ -324,7 +332,17 @@ textarea::placeholder {
 
 <script>
 
-let docs = JSON.parse(localStorage.getItem('pinkDocs')) || [];
+let docs;
+
+try {
+    docs = JSON.parse(localStorage.getItem('pinkDocs')) || [];
+
+    if (!Array.isArray(docs)) {
+        docs = [];
+    }
+} catch {
+    docs = [];
+}
 let currentDocId = null;
 
 const editor = document.getElementById('editor');
@@ -415,7 +433,7 @@ function updateWordCount() {
 editor.addEventListener('input', updateCurrentDoc);
 titleInput.addEventListener('input', updateCurrentDoc);
 
-if (docs.length === 0) {
+if (!docs || docs.length === 0) {
     createDoc();
 } else {
     currentDocId = docs[0].id;
@@ -438,14 +456,57 @@ const fonts = {
 };
 
 const savedFont = localStorage.getItem('pinkDocsFont') || 'Cute';
+
 const savedSize = localStorage.getItem('pinkDocsSize') || '18px';
 const savedWeight = localStorage.getItem('pinkDocsWeight') || 'normal';
 
-document.documentElement.style.setProperty('--editor-font', fonts[savedFont]);
-document.documentElement.style.setProperty('--editor-size', savedSize);
-document.documentElement.style.setProperty('--editor-weight', savedWeight);
+window.addEventListener('DOMContentLoaded', () => {
+    const fontSelect = document.getElementById('fontSelect');
+    const sizeSelect = document.getElementById('sizeSelect');
 
-function changeFont(fontNam
+    if (fontSelect) {
+        fontSelect.value = savedFont;
+    }
+
+    if (sizeSelect) {
+        sizeSelect.value = savedSize;
+    }
+
+    document.documentElement.style.setProperty('--editor-font', fonts[savedFont]);
+    document.documentElement.style.setProperty('--editor-size', savedSize);
+    document.documentElement.style.setProperty('--editor-weight', savedWeight);
+});
+
+/* preserve old documents safely */
+
+if (!localStorage.getItem('pinkDocsBackup')) {
+    localStorage.setItem('pinkDocsBackup', JSON.stringify(docs));
+}
+
+ localStorage.getItem('pinkDocsSize') || '18px';
+
+
+function changeFont(fontName) {
+    document.documentElement.style.setProperty('--editor-font', fonts[fontName]);
+    localStorage.setItem('pinkDocsFont', fontName);
+}
+
+function changeSize(size) {
+    document.documentElement.style.setProperty('--editor-size', size);
+    localStorage.setItem('pinkDocsSize', size);
+}
+
+function toggleBold() {
+    const currentWeight = getComputedStyle(document.documentElement)
+        .getPropertyValue('--editor-weight');
+
+    const newWeight = currentWeight.trim() === 'bold'
+        ? 'normal'
+        : 'bold';
+
+    document.documentElement.style.setProperty('--editor-weight', newWeight);
+    localStorage.setItem('pinkDocsWeight', newWeight);
+}
 
 /* Sparkles */
 
@@ -534,4 +595,3 @@ This design mixes:
 * old-school diary sites
 * Google Docs functionality
 * soft Y2K gradients
-
