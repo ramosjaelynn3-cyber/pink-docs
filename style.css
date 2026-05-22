@@ -1,120 +1,131 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
-  margin: 0;
-  font-family: 'Quicksand', sans-serif;
-  background: linear-gradient(135deg, #ffe4f3, #ffeef9);
-  overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #ffe6f3, #ffcce6);
+    height: 100vh;
+    overflow: hidden;
+    color: #5b2a45;
 }
 
-/* APP LAYOUT */
-.layout {
-  display: flex;
-  height: 100vh;
+.app {
+    display: flex;
+    height: 100vh;
 }
 
-/* SIDEBAR (GLASS STYLE) */
+/* SIDEBAR */
 .sidebar {
-  width: 240px;
-  padding: 16px;
-  background: rgba(255, 182, 217, 0.35);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255,255,255,0.4);
+    width: 280px;
+    background: rgba(255,255,255,0.5);
+    padding: 20px;
+    overflow-y: auto;
 }
 
-/* CHARACTER CARDS */
-.card {
-  background: rgba(255,255,255,0.7);
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 16px;
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+.logo {
+    font-size: 26px;
+    color: #ff4fa0;
+    margin-bottom: 20px;
 }
 
-.card:hover {
-  transform: translateY(-3px) scale(1.02);
-  background: white;
-  box-shadow: 0 8px 18px rgba(255, 105, 180, 0.25);
+.new-doc-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #ff4fa0;
+    color: white;
+    margin-bottom: 15px;
+    cursor: pointer;
 }
 
-/* MAIN AREA */
+.doc-item {
+    padding: 12px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+/* MAIN */
 .main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
-/* TOP BAR */
 .topbar {
-  padding: 12px 16px;
-  background: rgba(255, 143, 193, 0.8);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
 }
 
-/* BUTTONS */
-button {
-  background: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-
-  transition: 0.2s ease;
-  font-weight: 600;
+/* FILE MENU */
+.file-menu {
+    position: relative;
 }
 
-button:hover {
-  transform: scale(1.05);
-  background: #ffe6f1;
+.file-menu button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
 }
 
-/* EDITOR */
-#editor {
-  flex: 1;
-  background: white;
-  margin: 12px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  padding: 10px;
-}
-
-/* POPUP */
-.popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-content {
-  background: white;
-  padding: 18px;
-  border-radius: 18px;
-  width: 360px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  animation: pop 0.2s ease;
-}
-
-@keyframes pop {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: white;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
-.close {
-  float: right;
-  cursor: pointer;
-  font-size: 18px;
+.title-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.7);
+    font-size: 18px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.editor {
+    flex: 1;
+    background: rgba(255,255,255,0.6);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    resize: none;
+    outline: none;
+    font-size: var(--size, 18px);
+    font-family: var(--font, 'Nunito');
+    font-weight: var(--weight, normal);
 }
