@@ -1,382 +1,424 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>✧LessyDocs✧</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 AngelDocs 🌸</title>
+    <style>
+        :root {
+            --bg-color: #ffeef8;
+            --primary-pink: #ff85c2;
+            --dark-pink: #d9418d;
+            --light-pink: #fff0f7;
+            --accent-blue: #a3e5ff;
+            --text-color: #4a283c;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Quicksand:wght@500;700&family=Caveat&family=VT323&display=swap" rel="stylesheet">
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace, sans-serif;
+        }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--light-pink) 20%, transparent 20%),
+                              radial-gradient(var(--light-pink) 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-<style>
-body {
-    margin: 0;
-    font-family: Nunito;
-    background: linear-gradient(135deg,#ffe6f3,#ffcce6);
-    height: 100vh;
-    overflow-y: auto;
-    color: #5b2a45;
-}
+        /* --- HEADER AREA --- */
+        header {
+            background: white;
+            border-bottom: 4px ridge var(--primary-pink);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-.app {
-    display: flex;
-    height: 100vh;
-    backdrop-filter: blur(18px);
-}
+        .left-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-.sidebar {
-    width: 270px;
-    background: rgba(255,255,255,0.4);
-    padding: 20px;
-}
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px var(--accent-blue);
+            cursor: pointer;
+        }
 
-.logo {
-    font-size: 26px;
-    color: #ff4fa0;
-}
+        .doc-info {
+            display: flex;
+            flex-direction: column;
+        }
 
-.new-btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 14px;
-    background: #ff4fa0;
-    color: white;
-    cursor: pointer;
-}
+        #doc-title {
+            font-size: 18px;
+            border: 2px dotted transparent;
+            padding: 2px 5px;
+            color: var(--dark-pink);
+            font-weight: bold;
+            background: none;
+            outline: none;
+            border-radius: 5px;
+        }
 
-.doc {
-    padding: 10px;
-    margin-top: 10px;
-    background: rgba(255,255,255,0.6);
-    border-radius: 12px;
-    cursor: pointer;
-}
+        #doc-title:focus, #doc-title:hover {
+            border-color: var(--primary-pink);
+            background: var(--light-pink);
+        }
 
-.main {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
+        /* --- TOOLBAR --- */
+        .toolbar {
+            background: var(--light-pink);
+            border-bottom: 3px double var(--primary-pink);
+            padding: 8px 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
-.topbar {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    background: rgba(255,255,255,0.45);
-    padding: 12px;
-    border-radius: 18px;
-}
+        .toolbar button, .toolbar select {
+            background: white;
+            border: 2px solid var(--primary-pink);
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--dark-pink);
+            box-shadow: 2px 2px 0px var(--primary-pink);
+            transition: all 0.1s ease;
+        }
 
-.menu {
-    position: relative;
-}
+        .toolbar button:active {
+            box-shadow: 0px 0px 0px var(--primary-pink);
+            transform: translate(2px, 2px);
+        }
 
-.menu button {
-    border: none;
-    padding: 10px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.7);
-}
+        .toolbar button:hover, .toolbar select:hover {
+            background: #fff6fb;
+            border-color: var(--dark-pink);
+        }
 
-.drop {
-    position: absolute;
-    top: 40px;
-    background: white;
-    border-radius: 12px;
-    padding: 8px;
-    display: none;
-}
+        /* --- MAIN WORKSPACE --- */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
 
-.title {
-    width: 120px;              /* ✨ compact default */
-    padding: 8px;
-    border-radius: 12px;
-    border: none;
-    transition: all 0.25s ease;
-}
+        /* Sidebar for Saved Docs */
+        .sidebar {
+            width: 220px;
+            background: white;
+            border-right: 4px ridge var(--primary-pink);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
 
-/* ✨ expand on click */
-.title:focus {
-    width: 260px;
-    background: white;
-}
+        .sidebar h3 {
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px dashed var(--primary-pink);
+            color: var(--dark-pink);
+        }
 
-.tools {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    flex-wrap: wrap;
-}
+        .doc-list {
+            list-style: none;
+            overflow-y: auto;
+            flex: 1;
+        }
 
-.tools button,
-.tools select,
-.tools input {
-    border: none;
-    padding: 8px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.7);
-}
+        .doc-item {
+            padding: 8px;
+            margin-bottom: 6px;
+            background: var(--light-pink);
+            border: 1px solid var(--primary-pink);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            word-break: break-all;
+        }
 
-/* palettes */
-.palette,
-.colorPalette {
-    position: absolute;
-    top: 45px;
-    display: none;
-    padding: 10px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.95);
-    box-shadow: 0 10px 25px rgba(255,120,170,0.2);
-}
+        .doc-item:hover {
+            background: var(--primary-pink);
+            color: white;
+        }
 
-.color {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    border: none;
-    margin: 2px;
-    cursor: pointer;
-}
+        .delete-btn {
+            background: none;
+            border: none;
+            color: red;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 5px;
+        }
 
-.clear {
-    width: 100%;
-    margin-top: 6px;
-    padding: 6px;
-    border-radius: 10px;
-    border: none;
-    background: #ffe0ea;
-    cursor: pointer;
-}
+        /* Document Editor Page */
+        .editor-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            background: #fff0f7;
+        }
 
-.editor {
-    flex: 1;
-    margin-top: 15px;
-    padding: 25px;
-    background: rgba(255,255,255,0.55);
-    border-radius: 24px;
-    outline: none;
-    overflow-y: auto;
-}
+        .page {
+            width: 8.5in;
+            min-height: 11in;
+            background: white;
+            padding: 1in;
+            box-shadow: 0px 4px 20px rgba(217, 65, 141, 0.15);
+            border: 3px double var(--primary-pink);
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
 
-/* 💗 ONLY SIZE BOX NOW */
-.sizeBox {
-    width: 55px;
-    text-align: center;
-}
-</style>
+        /* --- STATUS BAR --- */
+        footer {
+            background: white;
+            border-top: 3px ridge var(--primary-pink);
+            padding: 5px 20px;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--dark-pink);
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="app">
+    <header>
+        <div class="left-header">
+            <div class="logo" onclick="createNewDoc()">✨AngelDocs✨</div>
+            <div class="doc-info">
+                <input type="text" id="doc-title" value="Untitled Glitter Doc" oninput="saveCurrentDoc()">
+            </div>
+        </div>
+        <div>
+            <button class="toolbar button" onclick="createNewDoc()" style="margin: 0;">🎀 New Doc</button>
+        </div>
+    </header>
 
-<div class="sidebar">
-    <div class="logo">✧LessyDocs✧</div>
-    <button class="new-btn" onclick="newDoc()">+ New</button>
-    <div id="docs"></div>
-</div>
+    <div class="toolbar">
+        <button onclick="format('bold')"><b>B</b></button>
+        <button onclick="format('italic')"><i>I</i></button>
+        <button onclick="format('underline')"><u>U</u></button>
+        <button onclick="format('strikeThrough')"><s>S</s></button>
+        
+        <select onchange="format('formatBlock', this.value); this.selectedIndex=0;">
+            <option value="" selected disabled>Style</option>
+            <option value="H1">Heading 1</option>
+            <option value="H2">Heading 2</option>
+            <option value="P">Paragraph</option>
+        </select>
 
-<div class="main">
+        <select onchange="format('fontSize', this.value); this.selectedIndex=0;">
+            <option value="" selected disabled>Size</option>
+            <option value="3">Small</option>
+            <option value="4">Normal</option>
+            <option value="5">Large</option>
+            <option value="6">Huge</option>
+        </select>
 
-<div class="topbar">
+        <select onchange="format('foreColor', this.value); this.selectedIndex=0;">
+            <option value="" selected disabled>Color</option>
+            <option value="#d9418d">Pink</option>
+            <option value="#a3e5ff">Blue</option>
+            <option value="#7d53de">Purple</option>
+            <option value="#000000">Black</option>
+        </select>
 
-    <div class="menu">
-        <button onclick="toggleMenu()">File</button>
-        <div id="menu" class="drop">
-            <button onclick="save()">Save</button>
-            <button onclick="pdf()">PDF</button>
-            <button onclick="del()">Delete</button>
+        <button onclick="format('justifyLeft')">⬅ Align L</button>
+        <button onclick="format('justifyCenter')">🔀 Center</button>
+        <button onclick="format('justifyRight')">➡ Align R</button>
+        <button onclick="format('insertUnorderedList')">• List</button>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>💌 Saved Docs</h3>
+            <ul class="doc-list" id="doc-list">
+                </ul>
+        </div>
+
+        <div class="editor-container">
+            <div class="page" id="editor" contenteditable="true" oninput="saveCurrentDoc()"></div>
         </div>
     </div>
 
-    <!-- ✨ SMALL EXPANDING TITLE -->
-    <input id="title" class="title" placeholder="Untitled"/>
+    <footer>
+        <span id="status">Status: All changes saved to local storage ✨</span>
+        <span id="word-count">Words: 0</span>
+    </footer>
 
-    <div class="tools">
+    <script>
+        let currentDocId = '';
 
-        <button onclick="cmd('bold')"><b>B</b></button>
-        <button onclick="cmd('italic')"><i>I</i></button>
-        <button onclick="cmd('underline')"><u>U</u></button>
-
-        <button onclick="cmd('justifyLeft')">⬅</button>
-        <button onclick="cmd('justifyCenter')">⬌</button>
-        <button onclick="cmd('justifyRight')">➡</button>
-
-        <!-- ONLY SIZE BOX NOW -->
-        <input id="customSize"
-               class="sizeBox"
-               placeholder="px"
-               maxlength="3"
-               onkeydown="if(event.key==='Enter') applySize()">
-
-        <select onchange="setSize(this.value)">
-            <option value="12px">12</option>
-            <option value="14px">14</option>
-            <option value="16px">16</option>
-            <option value="18px" selected>18</option>
-            <option value="24px">24</option>
-            <option value="30px">30</option>
-        </select>
-
-        <select onchange="font(this.value)">
-            <option value="Nunito">Nunito</option>
-            <option value="Quicksand">Quicksand</option>
-            <option value="Caveat">Caveat</option>
-            <option value="VT323">VT323</option>
-        </select>
-
-        <button onclick="togglePalette()">🌸</button>
-
-        <div id="palette" class="palette">
-            <button class="color" style="background:#d52d00" onclick="hl('#d52d00')"></button>
-            <button class="color" style="background:#ff9a56" onclick="hl('#ff9a56')"></button>
-            <button class="color" style="background:#ffffff" onclick="hl('#ffffff')"></button>
-            <button class="color" style="background:#d162a4" onclick="hl('#d162a4')"></button>
-            <button class="color" style="background:#a30262" onclick="hl('#a30262')"></button>
-            <button class="clear" onclick="clearHL()">❌ clear</button>
-        </div>
-
-    </div>
-</div>
-
-<div id="editor" class="editor" contenteditable="true"></div>
-
-</div>
-
-</div>
-
-<script>
-let docs = JSON.parse(localStorage.getItem("docs")) || [];
-let current = null;
-
-const ed = document.getElementById("editor");
-const title = document.getElementById("title");
-
-/* TITLE SAVE */
-title.addEventListener("focus", () => title.dataset.old = title.value);
-title.addEventListener("input", save);
-
-/* SIZE APPLY */
-function applySize(){
-    let size = document.getElementById("customSize").value;
-    if(!size) return;
-
-    if(!size.includes("px") && !size.includes("em") && !size.includes("%")){
-        size += "px";
-    }
-
-    document.execCommand("fontSize", false, "7");
-    document.querySelectorAll("font[size='7']").forEach(el=>{
-        el.removeAttribute("size");
-        el.style.fontSize = size;
-    });
-
-    document.getElementById("customSize").value = "";
-}
-
-/* PRESET SIZE */
-function setSize(val){
-    document.execCommand("fontSize", false, "7");
-    document.querySelectorAll("font[size='7']").forEach(el=>{
-        el.removeAttribute("size");
-        el.style.fontSize = val;
-    });
-}
-
-/* FONT */
-function font(f){
-    document.execCommand("fontName", false, f);
-}
-
-/* HIGHLIGHT */
-function hl(color){
-    document.execCommand("hiliteColor", false, color);
-}
-
-function clearHL(){
-    document.execCommand("hiliteColor", false, "transparent");
-}
-
-/* FILE */
-function toggleMenu(){
-    document.getElementById("menu").style.display =
-    document.getElementById("menu").style.display === "block" ? "none" : "block";
-}
-
-/* DOCS */
-function newDoc(){
-    let d = {id:Date.now(), title:"Untitled", content:""};
-    docs.unshift(d);
-    current = d.id;
-    load();
-    render();
-    save();
-}
-
-function load(){
-    let d = docs.find(x=>x.id===current);
-    if(!d) return;
-    title.value = d.title;
-    ed.innerHTML = d.content;
-}
-
-function render(){
-    document.getElementById("docs").innerHTML = "";
-    docs.forEach(d=>{
-        let div = document.createElement("div");
-        div.className = "doc";
-        div.innerText = d.title;
-        div.onclick = ()=>{
-            current = d.id;
-            load();
+        // Run application setup on load
+        window.onload = function() {
+            initializeSidebar();
+            loadDefaultOrLatestDoc();
+            setupWordCounter();
         };
-        document.getElementById("docs").appendChild(div);
-    });
-}
 
-function del(){
-    docs = docs.filter(x=>x.id!==current);
-    current = docs[0]?.id || null;
-    render();
-    load();
-    save();
-}
+        // Rich Text Formatting helper
+        function format(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('editor').focus();
+            saveCurrentDoc();
+        }
 
-function save(){
-    let d = docs.find(x=>x.id===current);
-    if(!d) return;
-    d.title = title.value;
-    d.content = ed.innerHTML;
-    localStorage.setItem("docs", JSON.stringify(docs));
-}
+        // Generate safe unique IDs
+        function generateId() {
+            return 'doc_' + Date.now();
+        }
 
-/* EDIT */
-function cmd(c){ document.execCommand(c); }
+        // Get list of all docs from localStorage
+        function getSavedDocs() {
+            const docs = localStorage.getItem('angel_docs_manifest');
+            return docs ? JSON.parse(docs) : [];
+        }
 
-/* PDF */
-function pdf(){
-    const { jsPDF } = window.jspdf;
-    const p = new jsPDF();
-    p.text(title.value, 10, 10);
-    p.text(ed.innerText, 10, 20);
-    p.save("doc.pdf");
-}
+        // Save the list of docs
+        function saveSavedDocsList(list) {
+            localStorage.setItem('angel_docs_manifest', JSON.stringify(list));
+        }
 
-/* AUTO SAVE */
-ed.addEventListener("input", save);
+        // Initialize sidebar lists
+        function initializeSidebar() {
+            const docList = document.getElementById('doc-list');
+            docList.innerHTML = '';
+            const docs = getSavedDocs();
 
-/* INIT */
-if(docs.length){
-    current = docs[0].id;
-    load();
-}else{
-    newDoc();
-}
-render();
-</script>
+            docs.forEach(doc => {
+                const li = document.createElement('li');
+                li.className = 'doc-item';
+                li.innerHTML = `
+                    <span onclick="loadDoc('${doc.id}')">🌸 ${doc.title}</span>
+                    <button class="delete-btn" onclick="deleteDoc('${doc.id}', event)">×</button>
+                `;
+                docList.appendChild(li);
+            });
+        }
 
+        // Create a completely new document
+        function createNewDoc() {
+            const id = generateId();
+            const newDoc = { id: id, title: "Untitled Glitter Doc" };
+            
+            const docs = getSavedDocs();
+            docs.push(newDoc);
+            saveSavedDocsList(docs);
+
+            localStorage.setItem(id, JSON.stringify({ title: newDoc.title, content: "Start typing here... ✨" }));
+            
+            currentDocId = id;
+            initializeSidebar();
+            loadDoc(id);
+        }
+
+        // Load document into editor
+        function loadDoc(id) {
+            currentDocId = id;
+            const docData = JSON.parse(localStorage.getItem(id));
+            if (docData) {
+                document.getElementById('doc-title').value = docData.title;
+                document.getElementById('editor').innerHTML = docData.content;
+                updateWordCount();
+            }
+        }
+
+        // Load the last document worked on, or create one if fresh
+        function loadDefaultOrLatestDoc() {
+            const docs = getSavedDocs();
+            if (docs.length > 0) {
+                loadDoc(docs[docs.length - 1].id);
+            } else {
+                createNewDoc();
+            }
+        }
+
+        // Auto-save typing and Title inputs
+        function saveCurrentDoc() {
+            if (!currentDocId) return;
+
+            const title = document.getElementById('doc-title').value || "Untitled";
+            const content = document.getElementById('editor').innerHTML;
+
+            // Save the document data body
+            localStorage.setItem(currentDocId, JSON.stringify({ title, content }));
+
+            // Update the title in the system manifest
+            const docs = getSavedDocs();
+            const docIndex = docs.findIndex(d => d.id === currentDocId);
+            if (docIndex !== -1 && docs[docIndex].title !== title) {
+                docs[docIndex].title = title;
+                saveSavedDocsList(docs);
+                initializeSidebar(); // Refresh names on the sidebar dynamically
+            }
+
+            updateWordCount();
+            showSaveIndicator();
+        }
+
+        // Delete a document
+        function deleteDoc(id, event) {
+            event.stopPropagation(); // Stop click from trying to open the file
+            if(confirm("Are you sure you want to delete this cute doc forever? 🥺")) {
+                localStorage.removeItem(id);
+                let docs = getSavedDocs();
+                docs = docs.filter(d => d.id !== id);
+                saveSavedDocsList(docs);
+                
+                initializeSidebar();
+                if (currentDocId === id) {
+                    loadDefaultOrLatestDoc();
+                }
+            }
+        }
+
+        // Flash UI save message
+        function showSaveIndicator() {
+            const status = document.getElementById('status');
+            status.innerText = "Saving to system memory... ✨";
+            setTimeout(() => {
+                status.innerText = "Status: All changes saved to local storage ✨";
+            }, 800);
+        }
+
+        // Live stats counter
+        function updateWordCount() {
+            const text = document.getElementById('editor').innerText.trim();
+            const count = text === "" ? 0 : text.split(/\s+/).length;
+            document.getElementById('word-count').innerText = `Words: ${count}`;
+        }
+
+        function setupWordCounter() {
+            document.getElementById('editor').addEventListener('keyup', updateWordCount);
+        }
+    </script>
 </body>
 </html>
