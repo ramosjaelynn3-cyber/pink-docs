@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 AngelDocs 🌸</title>
+    <title>AngelDocs</title>
     <style>
         :root {
             --bg-color: #ffeef8;
@@ -42,6 +42,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            z-index: 10;
         }
 
         .left-header {
@@ -55,6 +56,7 @@
             font-weight: bold;
             text-shadow: 2px 2px var(--accent-blue);
             cursor: pointer;
+            user-select: none;
         }
 
         .doc-info {
@@ -116,59 +118,14 @@
             display: flex;
             flex: 1;
             overflow: hidden;
+            position: relative;
         }
 
-        /* Sidebar for Saved Docs */
-        .sidebar {
-            width: 220px;
-            background: white;
-            border-right: 4px ridge var(--primary-pink);
+        /* Editor View Container */
+        .editor-view {
             display: flex;
-            flex-direction: column;
-            padding: 15px;
-        }
-
-        .sidebar h3 {
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 2px dashed var(--primary-pink);
-            color: var(--dark-pink);
-        }
-
-        .doc-list {
-            list-style: none;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .doc-item {
-            padding: 8px;
-            margin-bottom: 6px;
-            background: var(--light-pink);
-            border: 1px solid var(--primary-pink);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            word-break: break-all;
-        }
-
-        .doc-item:hover {
-            background: var(--primary-pink);
-            color: white;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: red;
-            font-weight: bold;
-            cursor: pointer;
-            margin-left: 5px;
+            width: 100%;
+            height: 100%;
         }
 
         /* Document Editor Page */
@@ -195,6 +152,107 @@
             color: #333;
         }
 
+        /* --- HOMEPAGE VIEW DASHBOARD --- */
+        .homepage-view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            background-image: radial-gradient(var(--light-pink) 20%, transparent 20%),
+                              radial-gradient(var(--light-pink) 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            padding: 40px;
+            overflow-y: auto;
+            z-index: 5;
+            display: none; /* Controlled by JS switching */
+        }
+
+        .homepage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+            border-bottom: 3px double var(--primary-pink);
+            padding-bottom: 15px;
+        }
+
+        .homepage-header h1 {
+            color: var(--dark-pink);
+            text-shadow: 1px 1px var(--accent-blue);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .doc-card {
+            background: white;
+            border: 3px solid var(--primary-pink);
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px var(--primary-pink);
+            padding: 20px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s ease;
+        }
+
+        .doc-card:hover {
+            transform: scale(1.02);
+            border-color: var(--dark-pink);
+        }
+
+        .doc-card-title {
+            font-weight: bold;
+            color: var(--dark-pink);
+            font-size: 16px;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .doc-card-preview {
+            font-size: 11px;
+            color: #777;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .card-delete-btn {
+            background: #fff0f7;
+            border: 1px solid var(--primary-pink);
+            color: var(--dark-pink);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .card-delete-btn:hover {
+            background: var(--dark-pink);
+            color: white;
+        }
+
         /* --- STATUS BAR --- */
         footer {
             background: white;
@@ -205,6 +263,7 @@
             justify-content: space-between;
             color: var(--dark-pink);
             font-weight: bold;
+            z-index: 10;
         }
     </style>
 </head>
@@ -212,17 +271,26 @@
 
     <header>
         <div class="left-header">
-            <div class="logo" onclick="createNewDoc()">✨AngelDocs✨</div>
-            <div class="doc-info">
-                <input type="text" id="doc-title" value="Untitled Glitter Doc" oninput="saveCurrentDoc()">
+            <div class="logo" onclick="showHomepage()">AngelDocs</div>
+            <div class="doc-info" id="header-doc-info">
+                <input type="text" id="doc-title" value="Untitled Doc" oninput="saveCurrentDoc()">
             </div>
         </div>
         <div>
-            <button class="toolbar button" onclick="createNewDoc()" style="margin: 0;">🎀 New Doc</button>
+            <button class="toolbar button" onclick="createNewDoc()" style="margin: 0;">New Doc</button>
         </div>
     </header>
 
-    <div class="toolbar">
+    <div class="toolbar" id="app-toolbar">
+        <select onchange="format('fontName', this.value); this.selectedIndex=0;">
+            <option value="" selected disabled>Font</option>
+            <option value="Courier New">Courier</option>
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Comic Sans MS">Comic Sans</option>
+            <option value="Impact">Impact</option>
+        </select>
+
         <button onclick="format('bold')"><b>B</b></button>
         <button onclick="format('italic')"><i>I</i></button>
         <button onclick="format('underline')"><u>U</u></button>
@@ -251,26 +319,32 @@
             <option value="#000000">Black</option>
         </select>
 
-        <button onclick="format('justifyLeft')">⬅ Align L</button>
-        <button onclick="format('justifyCenter')">🔀 Center</button>
-        <button onclick="format('justifyRight')">➡ Align R</button>
-        <button onclick="format('insertUnorderedList')">• List</button>
+        <button onclick="format('justifyLeft')">Align L</button>
+        <button onclick="format('justifyCenter')">Center</button>
+        <button onclick="format('justifyRight')">Align R</button>
+        <button onclick="format('insertUnorderedList')">List</button>
     </div>
 
     <div class="main-container">
-        <div class="sidebar">
-            <h3>💌 Saved Docs</h3>
-            <ul class="doc-list" id="doc-list">
-                </ul>
+        
+        <div class="editor-view" id="editor-view">
+            <div class="editor-container">
+                <div class="page" id="editor" contenteditable="true" oninput="saveCurrentDoc()"></div>
+            </div>
         </div>
 
-        <div class="editor-container">
-            <div class="page" id="editor" contenteditable="true" oninput="saveCurrentDoc()"></div>
+        <div class="homepage-view" id="homepage-view">
+            <div class="homepage-header">
+                <h1>Your Documents</h1>
+            </div>
+            <div class="grid-container" id="homepage-grid">
+                </div>
         </div>
+
     </div>
 
     <footer>
-        <span id="status">Status: All changes saved to local storage ✨</span>
+        <span id="status">Status: All changes saved to local storage</span>
         <span id="word-count">Words: 0</span>
     </footer>
 
@@ -279,8 +353,12 @@
 
         // Run application setup on load
         window.onload = function() {
-            initializeSidebar();
-            loadDefaultOrLatestDoc();
+            const docs = getSavedDocs();
+            if (docs.length > 0) {
+                showHomepage();
+            } else {
+                createNewDoc();
+            }
             setupWordCounter();
         };
 
@@ -307,36 +385,70 @@
             localStorage.setItem('angel_docs_manifest', JSON.stringify(list));
         }
 
-        // Initialize sidebar lists
-        function initializeSidebar() {
-            const docList = document.getElementById('doc-list');
-            docList.innerHTML = '';
+        // Switch to Homepage Screen
+        function showHomepage() {
+            document.getElementById('editor-view').style.display = 'none';
+            document.getElementById('app-toolbar').style.display = 'none';
+            document.getElementById('header-doc-info').style.display = 'none';
+            document.getElementById('homepage-view').style.display = 'block';
+            renderHomepageGrid();
+        }
+
+        // Switch to Editor Screen
+        function showEditor() {
+            document.getElementById('editor-view').style.display = 'flex';
+            document.getElementById('app-toolbar').style.display = 'flex';
+            document.getElementById('header-doc-info').style.display = 'flex';
+            document.getElementById('homepage-view').style.display = 'none';
+        }
+
+        // Build the main grid items on the homepage
+        function renderHomepageGrid() {
+            const grid = document.getElementById('homepage-grid');
+            grid.innerHTML = '';
             const docs = getSavedDocs();
 
+            if(docs.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--dark-pink);">No documents found. Click "New Doc" to get started.</p>';
+                return;
+            }
+
             docs.forEach(doc => {
-                const li = document.createElement('li');
-                li.className = 'doc-item';
-                li.innerHTML = `
-                    <span onclick="loadDoc('${doc.id}')">🌸 ${doc.title}</span>
-                    <button class="delete-btn" onclick="deleteDoc('${doc.id}', event)">×</button>
+                const docData = JSON.parse(localStorage.getItem(doc.id)) || { content: '' };
+                
+                // Strip HTML tags for clean text snippets inside document card previews
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = docData.content;
+                const plainText = tempDiv.innerText || tempDiv.textContent || 'Empty document...';
+
+                const card = document.createElement('div');
+                card.className = 'doc-card';
+                card.setAttribute('onclick', `loadDoc('${doc.id}')`);
+                card.innerHTML = `
+                    <div>
+                        <div class="doc-card-title">${doc.title}</div>
+                        <div class="doc-card-preview">${plainText}</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-delete-btn" onclick="deleteDoc('${doc.id}', event)">Delete</button>
+                    </div>
                 `;
-                docList.appendChild(li);
+                grid.appendChild(card);
             });
         }
 
         // Create a completely new document
         function createNewDoc() {
             const id = generateId();
-            const newDoc = { id: id, title: "Untitled Glitter Doc" };
+            const newDoc = { id: id, title: "Untitled Doc" };
             
             const docs = getSavedDocs();
             docs.push(newDoc);
             saveSavedDocsList(docs);
 
-            localStorage.setItem(id, JSON.stringify({ title: newDoc.title, content: "Start typing here... ✨" }));
+            localStorage.setItem(id, JSON.stringify({ title: newDoc.title, content: "Start typing here..." }));
             
-            currentDocId = id;
-            initializeSidebar();
+            showEditor();
             loadDoc(id);
         }
 
@@ -348,16 +460,7 @@
                 document.getElementById('doc-title').value = docData.title;
                 document.getElementById('editor').innerHTML = docData.content;
                 updateWordCount();
-            }
-        }
-
-        // Load the last document worked on, or create one if fresh
-        function loadDefaultOrLatestDoc() {
-            const docs = getSavedDocs();
-            if (docs.length > 0) {
-                loadDoc(docs[docs.length - 1].id);
-            } else {
-                createNewDoc();
+                showEditor();
             }
         }
 
@@ -365,7 +468,7 @@
         function saveCurrentDoc() {
             if (!currentDocId) return;
 
-            const title = document.getElementById('doc-title').value || "Untitled";
+            const title = document.getElementById('doc-title').value || "Untitled Doc";
             const content = document.getElementById('editor').innerHTML;
 
             // Save the document data body
@@ -377,7 +480,6 @@
             if (docIndex !== -1 && docs[docIndex].title !== title) {
                 docs[docIndex].title = title;
                 saveSavedDocsList(docs);
-                initializeSidebar(); // Refresh names on the sidebar dynamically
             }
 
             updateWordCount();
@@ -386,26 +488,26 @@
 
         // Delete a document
         function deleteDoc(id, event) {
-            event.stopPropagation(); // Stop click from trying to open the file
-            if(confirm("Are you sure you want to delete this cute doc forever? 🥺")) {
+            event.stopPropagation(); // Stop click event from opening the doc card
+            if(confirm("Are you sure you want to delete this doc?")) {
                 localStorage.removeItem(id);
                 let docs = getSavedDocs();
                 docs = docs.filter(d => d.id !== id);
                 saveSavedDocsList(docs);
                 
-                initializeSidebar();
                 if (currentDocId === id) {
-                    loadDefaultOrLatestDoc();
+                    currentDocId = '';
                 }
+                renderHomepageGrid();
             }
         }
 
         // Flash UI save message
         function showSaveIndicator() {
             const status = document.getElementById('status');
-            status.innerText = "Saving to system memory... ✨";
+            status.innerText = "Saving to system memory...";
             setTimeout(() => {
-                status.innerText = "Status: All changes saved to local storage ✨";
+                status.innerText = "Status: All changes saved to local storage";
             }, 800);
         }
 
